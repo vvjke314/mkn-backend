@@ -8,6 +8,8 @@ import "github.com/gin-gonic/gin"
 // @Tags         change
 // @Produce      json
 // @Success      200 {integer} 1
+// @Failure 403 {object} errorResponse
+// @Failure 404 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /{project}/{section}/{notification} [put]
 func (a *Application) UpdateNotification(c *gin.Context) {
@@ -20,6 +22,8 @@ func (a *Application) UpdateNotification(c *gin.Context) {
 // @Tags         delete
 // @Produce      json
 // @Success      200 {integer} 1
+// @Failure 403 {object} errorResponse
+// @Failure 404 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /{project}/{section}/{notification} [delete]
 func (a *Application) DeleteNotification(c *gin.Context) {

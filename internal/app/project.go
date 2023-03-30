@@ -8,6 +8,8 @@ import "github.com/gin-gonic/gin"
 // @Tags         change
 // @Produce      json
 // @Success      200 {integer} 1
+// @Failure 403 {object} errorResponse
+// @Failure 404 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /{project} [put]
 func (a *Application) UpdateProject(c *gin.Context) {
@@ -20,6 +22,8 @@ func (a *Application) UpdateProject(c *gin.Context) {
 // @Tags         delete
 // @Produce      json
 // @Success      200 {integer} 1
+// @Failure 403 {object} errorResponse
+// @Failure 404 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /{project} [delete]
 func (a *Application) DeleteProject(c *gin.Context) {
@@ -32,6 +36,7 @@ func (a *Application) DeleteProject(c *gin.Context) {
 // @Tags         add
 // @Produce      json
 // @Success      200 {integer} 1
+// @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /{project}/section [post]
 func (a *Application) CreateSection(c *gin.Context) {
@@ -44,6 +49,7 @@ func (a *Application) CreateSection(c *gin.Context) {
 // @Tags         info
 // @Produce      json
 // @Success      200 {integer} 1
+// @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /{project}/collaborators [get]
 func (a *Application) GetCollaborators(c *gin.Context) {
@@ -56,6 +62,7 @@ func (a *Application) GetCollaborators(c *gin.Context) {
 // @Tags         info
 // @Produce      json
 // @Success      200 {integer} 1
+// @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /{project}/sections [get]
 func (a *Application) GetAllSections(c *gin.Context) {
@@ -68,6 +75,7 @@ func (a *Application) GetAllSections(c *gin.Context) {
 // @Tags         add
 // @Produce      json
 // @Success      200 {integer} 1
+// @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /{project}/collaborator [post]
 func (a *Application) AddCollaborator(c *gin.Context) {
@@ -80,6 +88,7 @@ func (a *Application) AddCollaborator(c *gin.Context) {
 // @Tags         delete
 // @Produce      json
 // @Success      200 {integer} 1
+// @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /{project}/collaborator [delete]
 func (a *Application) DeleteCollaborator(c *gin.Context) {

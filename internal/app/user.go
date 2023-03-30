@@ -8,6 +8,7 @@ import "github.com/gin-gonic/gin"
 // @Tags         add
 // @Produce      json
 // @Success      200 {integer} 1
+// @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /project [post]
 func (a *Application) CreateProject(c *gin.Context) {
@@ -20,6 +21,7 @@ func (a *Application) CreateProject(c *gin.Context) {
 // @Tags         info
 // @Produce      json
 // @Success      200 {integer} 1
+// @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /upcoming [get]
 func (a *Application) GetUpcomingNotifications(c *gin.Context) {
@@ -32,6 +34,7 @@ func (a *Application) GetUpcomingNotifications(c *gin.Context) {
 // @Tags         info
 // @Produce      json
 // @Success      200 {integer} 1
+// @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /favorites [get]
 func (a *Application) GetFavoriteProjects(c *gin.Context) {
@@ -44,6 +47,7 @@ func (a *Application) GetFavoriteProjects(c *gin.Context) {
 // @Tags         info
 // @Produce      json
 // @Success      200 {integer} 1
+// @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /projects [get]
 func (a *Application) GetAllProjects(c *gin.Context) {
@@ -56,6 +60,7 @@ func (a *Application) GetAllProjects(c *gin.Context) {
 // @Tags         info
 // @Produce      json
 // @Success      200 {integer} 1
+// @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /owned_projects [get]
 func (a *Application) GetAllOwnedProjects(c *gin.Context) {

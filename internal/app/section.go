@@ -8,6 +8,8 @@ import "github.com/gin-gonic/gin"
 // @Tags         change
 // @Produce      json
 // @Success      200 {integer} 1
+// @Failure 403 {object} errorResponse
+// @Failure 404 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /{project}/{section} [put]
 func (a *Application) UpdateSection(c *gin.Context) {
@@ -20,6 +22,8 @@ func (a *Application) UpdateSection(c *gin.Context) {
 // @Tags         delete
 // @Produce      json
 // @Success      200 {integer} 1
+// @Failure 403 {object} errorResponse
+// @Failure 404 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /{project}/{section} [delete]
 func (a *Application) DeleteSection(c *gin.Context) {
@@ -32,6 +36,7 @@ func (a *Application) DeleteSection(c *gin.Context) {
 // @Tags         add
 // @Produce      json
 // @Success      200 {integer} 1
+// @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /{project}/{section}/notification [post]
 func (a *Application) CreateNotification(c *gin.Context) {
@@ -44,6 +49,7 @@ func (a *Application) CreateNotification(c *gin.Context) {
 // @Tags         info
 // @Produce      json
 // @Success      200 {integer} 1
+// @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /{project}/{section}/notifications [get]
 func (a *Application) GetAllNotifications(c *gin.Context) {
@@ -56,6 +62,8 @@ func (a *Application) GetAllNotifications(c *gin.Context) {
 // @Tags         info
 // @Produce      json
 // @Success      200 {integer} 1
+// @Failure 403 {object} errorResponse
+// @Failure 404 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /{project}/{section}/{notification} [get]
 func (a *Application) GetNotification(c *gin.Context) {

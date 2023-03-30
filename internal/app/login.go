@@ -9,7 +9,7 @@ import "github.com/gin-gonic/gin"
 // @Produce      json
 // @Success      200 {integer} 1
 // @Failure 500 {object} errorResponse
-// @Router      /login/ [post]
+// @Router      /login [post]
 func (a *Application) Login(c *gin.Context) {
 
 }
@@ -20,6 +20,7 @@ func (a *Application) Login(c *gin.Context) {
 // @Tags         auth
 // @Produce      json
 // @Success      200 {integer} 1
+// @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /logout [get]
 func (a *Application) Logout(c *gin.Context) {
