@@ -24,6 +24,14 @@ paths:
           description: OK
           schema:
             type: integer
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/internal_app.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/internal_app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -40,6 +48,14 @@ paths:
           description: OK
           schema:
             type: integer
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/internal_app.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/internal_app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -57,6 +73,14 @@ paths:
           description: OK
           schema:
             type: integer
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/internal_app.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/internal_app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -73,6 +97,14 @@ paths:
           description: OK
           schema:
             type: integer
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/internal_app.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/internal_app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -90,6 +122,14 @@ paths:
           description: OK
           schema:
             type: integer
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/internal_app.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/internal_app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -106,6 +146,14 @@ paths:
           description: OK
           schema:
             type: integer
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/internal_app.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/internal_app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -122,6 +170,14 @@ paths:
           description: OK
           schema:
             type: integer
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/internal_app.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/internal_app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -139,6 +195,10 @@ paths:
           description: OK
           schema:
             type: integer
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/internal_app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -156,6 +216,10 @@ paths:
           description: OK
           schema:
             type: integer
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/internal_app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -173,6 +237,10 @@ paths:
           description: OK
           schema:
             type: integer
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/internal_app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -189,6 +257,10 @@ paths:
           description: OK
           schema:
             type: integer
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/internal_app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -206,6 +278,10 @@ paths:
           description: OK
           schema:
             type: integer
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/internal_app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -223,6 +299,10 @@ paths:
           description: OK
           schema:
             type: integer
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/internal_app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -240,6 +320,10 @@ paths:
           description: OK
           schema:
             type: integer
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/internal_app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -257,6 +341,10 @@ paths:
           description: OK
           schema:
             type: integer
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/internal_app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -264,7 +352,7 @@ paths:
       summary: Gets favorite proj
       tags:
       - info
-  /login/:
+  /login:
     post:
       description: Login user
       produces:
@@ -291,6 +379,10 @@ paths:
           description: OK
           schema:
             type: integer
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/internal_app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -308,6 +400,10 @@ paths:
           description: OK
           schema:
             type: integer
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/internal_app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -325,6 +421,10 @@ paths:
           description: OK
           schema:
             type: integer
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/internal_app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -342,6 +442,10 @@ paths:
           description: OK
           schema:
             type: integer
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/internal_app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -376,6 +480,10 @@ paths:
           description: OK
           schema:
             type: integer
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/internal_app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -393,6 +501,10 @@ paths:
           description: OK
           schema:
             type: integer
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/internal_app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
