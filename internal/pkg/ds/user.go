@@ -3,8 +3,8 @@ package ds
 import "github.com/google/uuid"
 
 type User struct {
-	id        uuid.UUID
-	username  string
-	isManager bool
-	email     string
+	Id        uuid.UUID `json:"id"`
+	Username  string    `json:"username"`
+	IsManager bool      `json:"is_manager"`
+	Email     string    `json:"email"`
 }

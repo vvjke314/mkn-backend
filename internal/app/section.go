@@ -7,15 +7,12 @@ import "github.com/gin-gonic/gin"
 // @Description  Updates a section in the current project
 // @Tags         change
 // @Produce      json
-// @Success      200 {integer} 1
-// @Param project_id path string true "Project ID"
 // @Param section_id path string true "Section ID"
-// @Param title body string false "Section title"
-// @Param color body string false "Section color"
+// @Success 200 {object} []ds.Section
 // @Failure 403 {object} errorResponse
 // @Failure 404 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /{project}/{section} [put]
+// @Router      /project/section/{section_id} [put]
 func (a *Application) UpdateSection(c *gin.Context) {
 
 }
@@ -25,13 +22,12 @@ func (a *Application) UpdateSection(c *gin.Context) {
 // @Description  Deletes section from current project
 // @Tags         delete
 // @Produce      json
-// @Param project_id path string true "Project ID"
 // @Param section_id path string true "Section ID"
-// @Success      200 {integer} 1
+// @Success 200 {object} []ds.Section
 // @Failure 403 {object} errorResponse
 // @Failure 404 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /{project}/{section} [delete]
+// @Router      /project/section/{section_id} [delete]
 func (a *Application) DeleteSection(c *gin.Context) {
 
 }
@@ -41,17 +37,11 @@ func (a *Application) DeleteSection(c *gin.Context) {
 // @Description  Creates notification in accordance with the entered parameters
 // @Tags         add
 // @Produce      json
-// @Param project_id path string true "Project ID"
 // @Param section_id path string true "Section ID"
-// @Param title body string false "Notification title"
-// @Param description body string false "Notification description"
-// @Param deadline body time false "Notification deadline"
-// @Param status body string false "Notification status"
-// @Param error_status body string falase "Notification error status"
-// @Success      200 {integer} 1
+// @Success 200 {object} []ds.Notification
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /{project}/{section}/notification [post]
+// @Router      /project/section/{section_id}/notification [post]
 func (a *Application) CreateNotification(c *gin.Context) {
 
 }
@@ -61,12 +51,11 @@ func (a *Application) CreateNotification(c *gin.Context) {
 // @Description  Returns all notifications in the current section
 // @Tags         info
 // @Produce      json
-// @Param project_id path string true "Project ID"
 // @Param section_id path string true "Section ID"
 // @Success      200 {object} []ds.Notification
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /{project}/{section}/notifications [get]
+// @Router      /project/section/{section_id}/notifications [get]
 func (a *Application) GetAllNotifications(c *gin.Context) {
 
 }
@@ -76,14 +65,12 @@ func (a *Application) GetAllNotifications(c *gin.Context) {
 // @Description  Returns Notification by ID
 // @Tags         info
 // @Produce      json
-// @Param project_id path string true "Project ID"
-// @Param section_id path string true "Section ID"
 // @Param notification_id path string true "Notification ID"
 // @Success      200 {object} ds.Notification
 // @Failure 403 {object} errorResponse
 // @Failure 404 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /{project}/{section}/{notification} [get]
+// @Router      /project/section/notification/{notification_id} [get]
 func (a *Application) GetNotification(c *gin.Context) {
 
 }

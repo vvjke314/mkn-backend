@@ -34,28 +34,32 @@ func (a *Application) StartServer() {
 	r.POST("/project", a.CreateProject)
 	r.GET("/upcoming", a.GetUpcomingNotifications)
 	r.GET("/favorites", a.GetFavoriteProjects)
+	r.POST("/favorite", a.AddFavorite)
+	r.GET("/favorite", a.GetFavoriteProject)
+	r.DELETE("/favorite", a.DeleteFavorite)
 	r.GET("/projects", a.GetAllProjects)
 	r.GET("/owned_projects", a.GetAllOwnedProjects)
+	r.PUT("/email", a.ChangeEmail)
 
 	//project
-	r.PUT("/:project", a.UpdateProject)
-	r.DELETE("/:project", a.DeleteProject)
-	r.GET("/:project/collaborators", a.GetCollaborators)
-	r.GET("/:project/sections", a.GetAllSections)
-	r.POST("/:project/collaborator", a.AddCollaborator)
-	r.DELETE("/:project/collaborator", a.DeleteCollaborator)
+	r.PUT("/project/:project", a.UpdateProject)
+	r.DELETE("/project/:project_id", a.DeleteProject)
+	r.GET("/project/:project_id/collaborators", a.GetCollaborators)
+	r.GET("/project/:project_id/sections", a.GetAllSections)
+	r.POST("/project/:project_id/collaborator", a.AddCollaborator)
+	r.DELETE("/project/:project_id/collaborator", a.DeleteCollaborator)
 
 	//section
-	r.PUT("/:project/:section", a.UpdateSection)
-	r.DELETE("/:project/:section", a.DeleteSection)
-	r.POST("/:project/section", a.CreateSection)
-	r.GET("/:project/:section/notifications", a.GetAllNotifications)
-	r.GET("/:project/:section/:notification", a.GetNotification)
+	r.PUT("/project/section/:section_id", a.UpdateSection)
+	r.DELETE("/project/section/:section_id", a.DeleteSection)
+	r.POST("/project/:project_id/section", a.CreateSection)
+	r.GET("/project/section/:section_id/notifications", a.GetAllNotifications)
+	r.GET("/project/section/notification/:notification_id", a.GetNotification)
 
 	//notification
-	r.PUT("/:project/:section/:notification", a.UpdateNotification)
-	r.DELETE("/:project/:section/:notification", a.DeleteNotification)
-	r.POST("/:project/:section/notification", a.CreateNotification)
+	r.PUT("/project/section/notification/:notification_id", a.UpdateNotification)
+	r.DELETE("/project/section/notification/:notification_id", a.DeleteNotification)
+	r.POST("/project/section/:section_id/notification", a.CreateNotification)
 
 	//moderator
 	r.GET("/undelivered_notifications", a.GetUndeliviredNotifications)

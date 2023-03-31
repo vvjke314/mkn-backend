@@ -7,8 +7,9 @@ import "github.com/gin-gonic/gin"
 // @Description  Creates project
 // @Tags         add
 // @Produce      json
-// @Success      200 {integer} 1
+// @Success      200 {object} []ds.Project
 // @Failure 403 {object} errorResponse
+// @Failure 404 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /project [post]
 func (a *Application) CreateProject(c *gin.Context) {
@@ -33,11 +34,24 @@ func (a *Application) GetUpcomingNotifications(c *gin.Context) {
 // @Description  Returns favorite projects
 // @Tags         info
 // @Produce      json
-// @Success      200 {object} []ds.Project
+// @Success      200 {object} []ds.FavoriteProject
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /favorites [get]
 func (a *Application) GetFavoriteProjects(c *gin.Context) {
+
+}
+
+// GetFavoriteProject godoc
+// @Summary      Gets favorite projects
+// @Description  Returns favorite projects
+// @Tags         info
+// @Produce      json
+// @Success      200 {object} ds.FavoriteProject
+// @Failure 403 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Router      /favorites [get]
+func (a *Application) GetFavoriteProject(c *gin.Context) {
 
 }
 
@@ -55,8 +69,8 @@ func (a *Application) GetAllProjects(c *gin.Context) {
 }
 
 // GetAllOwnedProjects godoc
-// @Summary      Gets all owned proj
-// @Description  Gets all owned proj
+// @Summary      Gets all owned project
+// @Description  Gets all owned project
 // @Tags         info
 // @Produce      json
 // @Success      200 {object} []ds.Project
@@ -64,5 +78,45 @@ func (a *Application) GetAllProjects(c *gin.Context) {
 // @Failure 500 {object} errorResponse
 // @Router      /owned_projects [get]
 func (a *Application) GetAllOwnedProjects(c *gin.Context) {
+
+}
+
+// AddFavorite godoc
+// @Summary      Add favorite project
+// @Description  Add favorite project
+// @Tags         add
+// @Produce      json
+// @Param project_id query string true "Project ID"
+// @Success      200 {object} []ds.FavoriteProject
+// @Failure 403 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Router      /favorite [post]
+func (a *Application) AddFavorite(c *gin.Context) {
+
+}
+
+// DeleteFavorite godoc
+// @Summary      Delete favorite project
+// @Description  Delete favorite user project
+// @Tags         delete
+// @Produce      json
+// @Success      200 {object} []ds.FavoriteProject
+// @Failure 403 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Router      /favorite [delete]
+func (a *Application) DeleteFavorite(c *gin.Context) {
+
+}
+
+// ChangeEmail godoc
+// @Summary      Changes user email
+// @Description  Changes user email
+// @Tags         change
+// @Produce      json
+// @Success      200 {object} []ds.FavoriteProject
+// @Failure 403 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Router      /email [put]
+func (a *Application) ChangeEmail(c *gin.Context) {
 
 }

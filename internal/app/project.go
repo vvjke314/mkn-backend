@@ -7,15 +7,12 @@ import "github.com/gin-gonic/gin"
 // @Description  Updates a specific project according to the entered parameters
 // @Tags         change
 // @Produce      json
-// @Success      200 {integer} 1
-// @Param id path string true "Project ID"
-// @Param owner_id body string false "Owner ID"
-// @Param title body string false "Project title"
-// @Param description body string false "Project description"
+// @Success 200 {object} []ds.Project
+// @Param project_id path string true "Project ID"
 // @Failure 403 {object} errorResponse
 // @Failure 404 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /{project} [put]
+// @Router      /project/{project_id} [put]
 func (a *Application) UpdateProject(c *gin.Context) {
 
 }
@@ -25,12 +22,12 @@ func (a *Application) UpdateProject(c *gin.Context) {
 // @Description  Deletes a specific project
 // @Tags         delete
 // @Produce      json
-// @Param id path string true "Project ID"
-// @Success      200 {integer} 1
+// @Param project_id path string true "Project ID"
+// @Success 200 {object} []ds.Project
 // @Failure 403 {object} errorResponse
 // @Failure 404 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /{project} [delete]
+// @Router      /project/{project_id} [delete]
 func (a *Application) DeleteProject(c *gin.Context) {
 
 }
@@ -40,13 +37,11 @@ func (a *Application) DeleteProject(c *gin.Context) {
 // @Description  Creates a section in the project
 // @Tags         add
 // @Produce      json
-// @Param id path string true "Project ID"
-// @Param title body string false "Section title"
-// @Param color body string false "Section color"
-// @Success      200 {integer} 1
+// @Param project_id path string true "Project ID"
+// @Success 200 {object} []ds.Section
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /{project}/section [post]
+// @Router      /project/{project_id}/section [post]
 func (a *Application) CreateSection(c *gin.Context) {
 
 }
@@ -56,11 +51,11 @@ func (a *Application) CreateSection(c *gin.Context) {
 // @Description  Returns all collaborators of the project
 // @Tags         info
 // @Produce      json
-// @Param id path string true "Project ID"
-// @Success      200 {object} ds.Collaborations
+// @Param project_id path string true "Project ID"
+// @Success      200 {object} []ds.Collaboration
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /{project}/collaborators [get]
+// @Router      /project/{project_id}/collaborators [get]
 func (a *Application) GetCollaborators(c *gin.Context) {
 
 }
@@ -70,11 +65,11 @@ func (a *Application) GetCollaborators(c *gin.Context) {
 // @Description  Returns all sections of the current project
 // @Tags         info
 // @Produce      json
-// @Param id path string true "Project ID"
+// @Param project_id path string true "Project ID"
 // @Success      200 {object} []ds.Section
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /{project}/sections [get]
+// @Router      /project/{project_id}/sections [get]
 func (a *Application) GetAllSections(c *gin.Context) {
 
 }
@@ -84,11 +79,11 @@ func (a *Application) GetAllSections(c *gin.Context) {
 // @Description  Adds a collaborator to the current project
 // @Tags         add
 // @Produce      json
-// @Param id path string true "Project ID"
-// @Success      200 {integer} 1
+// @Param project_id path string true "Project ID"
+// @Success 200 {object} []ds.Collaboration
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /{project}/collaborator [post]
+// @Router      /project/{project_id}/collaborator [post]
 func (a *Application) AddCollaborator(c *gin.Context) {
 
 }
@@ -98,11 +93,11 @@ func (a *Application) AddCollaborator(c *gin.Context) {
 // @Description  Removes a collaborator from the current project
 // @Tags         delete
 // @Produce      json
-// @Param id path string true "Project ID"
-// @Success      200 {integer} 1
+// @Param project_id path string true "Project ID"
+// @Success 200 {object} []ds.Collaboration
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /{project}/collaborator [delete]
+// @Router      /project/{project_id}/collaborator [delete]
 func (a *Application) DeleteCollaborator(c *gin.Context) {
 
 }

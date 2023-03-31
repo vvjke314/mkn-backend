@@ -7,7 +7,7 @@ import "github.com/gin-gonic/gin"
 // @Description  Login user
 // @Tags         auth
 // @Produce      json
-// @Success      200 {integer} 1
+// @Success      200 {object} ds.User
 // @Failure 500 {object} errorResponse
 // @Router      /login [post]
 func (a *Application) Login(c *gin.Context) {
@@ -19,7 +19,7 @@ func (a *Application) Login(c *gin.Context) {
 // @Description  Logout user
 // @Tags         auth
 // @Produce      json
-// @Success      200 {integer} 1
+// @Success      200 {object} ds.User
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /logout [get]
@@ -32,7 +32,7 @@ func (a *Application) Logout(c *gin.Context) {
 // @Description  Signup user
 // @Tags         auth
 // @Produce      json
-// @Success      200 {integer} 1
+// @Success      200 {object} ds.User
 // @Failure 500 {object} errorResponse
 // @Router      /signup [post]
 func (a *Application) SignUp(c *gin.Context) {
