@@ -3,7 +3,7 @@ package ds
 import "github.com/google/uuid"
 
 type FavoriteProjects struct {
-	id        uuid.UUID
-	projectId uuid.UUID
-	userId    uuid.UUID
+	Id        uuid.UUID `json:"id"`
+	ProjectId uuid.UUID `json:"project_id"`
+	UserId    uuid.UUID `json:"user_id"`
 }

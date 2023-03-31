@@ -7,7 +7,7 @@ import "github.com/gin-gonic/gin"
 // @Description  Gets undelivired notifications
 // @Tags         info
 // @Produce      json
-// @Success      200 {integer} 1
+// @Success      200 {object} []ds.Notification
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /undelivered_notifications [get]

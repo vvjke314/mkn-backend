@@ -1,7 +1,7 @@
 # mnk-backend
 Репозиторий бэкенда сервиса облачных напоминаний с синхронизацией уведомлений
 
-### TO DO (cursive optional)
+### TO DO (italic optional)
 - endpoints implementation
 - postgre via docker
 - gorm
@@ -11,4 +11,4 @@
 - jwt
 - auth check
 - *redis*
-- kafka consumer
+- kafka producer

@@ -5,8 +5,8 @@ import (
 )
 
 type Project struct {
-	id          uuid.UUID
-	ownerId     uuid.UUID
-	title       string
-	description string
+	Id          uuid.UUID `json:"id"`
+	OwnerId     uuid.UUID `json:"owner_id"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
 }

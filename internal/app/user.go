@@ -20,7 +20,7 @@ func (a *Application) CreateProject(c *gin.Context) {
 // @Description  Gets upcoming notifications
 // @Tags         info
 // @Produce      json
-// @Success      200 {integer} 1
+// @Success      200 {object} []ds.Notification
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /upcoming [get]
@@ -33,7 +33,7 @@ func (a *Application) GetUpcomingNotifications(c *gin.Context) {
 // @Description  Gets favorite proj
 // @Tags         info
 // @Produce      json
-// @Success      200 {integer} 1
+// @Success      200 {object} []ds.Project
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /favorites [get]
@@ -46,7 +46,7 @@ func (a *Application) GetFavoriteProjects(c *gin.Context) {
 // @Description  Gets all proj
 // @Tags         info
 // @Produce      json
-// @Success      200 {integer} 1
+// @Success      200 {object} []ds.Project
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /projects [get]
@@ -59,7 +59,7 @@ func (a *Application) GetAllProjects(c *gin.Context) {
 // @Description  Gets all owned proj
 // @Tags         info
 // @Produce      json
-// @Success      200 {integer} 1
+// @Success      200 {object} []ds.Project
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /owned_projects [get]

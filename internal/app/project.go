@@ -48,7 +48,7 @@ func (a *Application) CreateSection(c *gin.Context) {
 // @Description  Gets collaborators
 // @Tags         info
 // @Produce      json
-// @Success      200 {integer} 1
+// @Success      200 {object} ds.Collaborations
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /{project}/collaborators [get]
@@ -61,7 +61,7 @@ func (a *Application) GetCollaborators(c *gin.Context) {
 // @Description  Gets all sections
 // @Tags         info
 // @Produce      json
-// @Success      200 {integer} 1
+// @Success      200 {object} []ds.Section
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /{project}/sections [get]

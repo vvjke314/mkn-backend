@@ -1,5 +1,53 @@
 basePath: /
 definitions:
+  ds.Collaborations:
+    properties:
+      id:
+        type: string
+      project_id:
+        type: string
+      user_id:
+        type: string
+    type: object
+  ds.Notification:
+    properties:
+      deadline:
+        type: string
+      description:
+        type: string
+      error_status:
+        type: integer
+      id:
+        type: string
+      section_id:
+        type: string
+      status:
+        type: string
+      title:
+        type: string
+    type: object
+  ds.Project:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+      owner_id:
+        type: string
+      title:
+        type: string
+    type: object
+  ds.Section:
+    properties:
+      color:
+        type: string
+      id:
+        type: string
+      project_id:
+        type: string
+      title:
+        type: string
+    type: object
   internal_app.errorResponse:
     properties:
       message:
@@ -145,7 +193,7 @@ paths:
         "200":
           description: OK
           schema:
-            type: integer
+            $ref: '#/definitions/ds.Notification'
         "403":
           description: Forbidden
           schema:
@@ -215,7 +263,9 @@ paths:
         "200":
           description: OK
           schema:
-            type: integer
+            items:
+              $ref: '#/definitions/ds.Notification'
+            type: array
         "403":
           description: Forbidden
           schema:
@@ -277,7 +327,7 @@ paths:
         "200":
           description: OK
           schema:
-            type: integer
+            $ref: '#/definitions/ds.Collaborations'
         "403":
           description: Forbidden
           schema:
@@ -319,7 +369,9 @@ paths:
         "200":
           description: OK
           schema:
-            type: integer
+            items:
+              $ref: '#/definitions/ds.Section'
+            type: array
         "403":
           description: Forbidden
           schema:
@@ -340,7 +392,9 @@ paths:
         "200":
           description: OK
           schema:
-            type: integer
+            items:
+              $ref: '#/definitions/ds.Project'
+            type: array
         "403":
           description: Forbidden
           schema:
@@ -399,7 +453,9 @@ paths:
         "200":
           description: OK
           schema:
-            type: integer
+            items:
+              $ref: '#/definitions/ds.Project'
+            type: array
         "403":
           description: Forbidden
           schema:
@@ -441,7 +497,9 @@ paths:
         "200":
           description: OK
           schema:
-            type: integer
+            items:
+              $ref: '#/definitions/ds.Project'
+            type: array
         "403":
           description: Forbidden
           schema:
@@ -479,7 +537,9 @@ paths:
         "200":
           description: OK
           schema:
-            type: integer
+            items:
+              $ref: '#/definitions/ds.Notification'
+            type: array
         "403":
           description: Forbidden
           schema:
@@ -500,7 +560,9 @@ paths:
         "200":
           description: OK
           schema:
-            type: integer
+            items:
+              $ref: '#/definitions/ds.Notification'
+            type: array
         "403":
           description: Forbidden
           schema:

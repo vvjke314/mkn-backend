@@ -48,7 +48,7 @@ func (a *Application) CreateNotification(c *gin.Context) {
 // @Description  Gets All Notifications
 // @Tags         info
 // @Produce      json
-// @Success      200 {integer} 1
+// @Success      200 {object} []ds.Notification
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /{project}/{section}/notifications [get]
@@ -61,7 +61,7 @@ func (a *Application) GetAllNotifications(c *gin.Context) {
 // @Description  Gets Notification by ID
 // @Tags         info
 // @Produce      json
-// @Success      200 {integer} 1
+// @Success      200 {object} ds.Notification
 // @Failure 403 {object} errorResponse
 // @Failure 404 {object} errorResponse
 // @Failure 500 {object} errorResponse
