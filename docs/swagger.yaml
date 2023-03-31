@@ -64,7 +64,13 @@ info:
 paths:
   /{project}:
     delete:
-      description: Deletes project
+      description: Deletes a specific project
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -88,7 +94,28 @@ paths:
       tags:
       - delete
     put:
-      description: Updates project
+      description: Updates a specific project according to the entered parameters
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Owner ID
+        in: body
+        name: owner_id
+        schema:
+          type: string
+      - description: Project title
+        in: body
+        name: title
+        schema:
+          type: string
+      - description: Project description
+        in: body
+        name: description
+        schema:
+          type: string
       produces:
       - application/json
       responses:
@@ -108,12 +135,23 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/internal_app.errorResponse'
-      summary: Updates project
+      summary: Update project
       tags:
       - change
   /{project}/{section}:
     delete:
-      description: Deletes section
+      description: Deletes section from current project
+      parameters:
+      - description: Project ID
+        in: path
+        name: project_id
+        required: true
+        type: string
+      - description: Section ID
+        in: path
+        name: section_id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -137,7 +175,28 @@ paths:
       tags:
       - delete
     put:
-      description: Updates section
+      description: Updates a section in the current project
+      parameters:
+      - description: Project ID
+        in: path
+        name: project_id
+        required: true
+        type: string
+      - description: Section ID
+        in: path
+        name: section_id
+        required: true
+        type: string
+      - description: Section title
+        in: body
+        name: title
+        schema:
+          type: string
+      - description: Section color
+        in: body
+        name: color
+        schema:
+          type: string
       produces:
       - application/json
       responses:
@@ -162,7 +221,23 @@ paths:
       - change
   /{project}/{section}/{notification}:
     delete:
-      description: Deletes notifications
+      description: Update information about a specific notification
+      parameters:
+      - description: Project ID
+        in: path
+        name: project_id
+        required: true
+        type: string
+      - description: Section ID
+        in: path
+        name: section_id
+        required: true
+        type: string
+      - description: Notification ID
+        in: path
+        name: notification_id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -182,11 +257,27 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/internal_app.errorResponse'
-      summary: Deletes notifications
+      summary: Delete notifications
       tags:
       - delete
     get:
-      description: Gets Notification by ID
+      description: Returns Notification by ID
+      parameters:
+      - description: Project ID
+        in: path
+        name: project_id
+        required: true
+        type: string
+      - description: Section ID
+        in: path
+        name: section_id
+        required: true
+        type: string
+      - description: Notification ID
+        in: path
+        name: notification_id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -210,7 +301,49 @@ paths:
       tags:
       - info
     put:
-      description: Updates notifications
+      description: Update information about a specific notification according to the
+        entered parameters
+      parameters:
+      - description: Project ID
+        in: path
+        name: project_id
+        required: true
+        type: string
+      - description: Section ID
+        in: path
+        name: section_id
+        required: true
+        type: string
+      - description: Notification ID
+        in: path
+        name: notification_id
+        required: true
+        type: string
+      - description: Notification title
+        in: body
+        name: title
+        schema:
+          type: string
+      - description: Notification description
+        in: body
+        name: description
+        schema:
+          type: string
+      - description: Notification deadline
+        in: body
+        name: deadline
+        schema:
+          type: string
+      - description: Notification status
+        in: body
+        name: status
+        schema:
+          type: string
+      - description: Notification error status
+        in: body
+        name: error_status
+        schema:
+          type: string
       produces:
       - application/json
       responses:
@@ -230,12 +363,48 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/internal_app.errorResponse'
-      summary: Updates notifications
+      summary: Update notifications
       tags:
       - change
   /{project}/{section}/notification:
     post:
-      description: Creates notification
+      description: Creates notification in accordance with the entered parameters
+      parameters:
+      - description: Project ID
+        in: path
+        name: project_id
+        required: true
+        type: string
+      - description: Section ID
+        in: path
+        name: section_id
+        required: true
+        type: string
+      - description: Notification title
+        in: body
+        name: title
+        schema:
+          type: string
+      - description: Notification description
+        in: body
+        name: description
+        schema:
+          type: string
+      - description: Notification deadline
+        in: body
+        name: deadline
+        schema:
+          type: string
+      - description: Notification status
+        in: body
+        name: status
+        schema:
+          type: string
+      - description: Notification error status
+        in: body
+        name: error_status
+        schema:
+          type: string
       produces:
       - application/json
       responses:
@@ -256,7 +425,18 @@ paths:
       - add
   /{project}/{section}/notifications:
     get:
-      description: Gets All Notifications
+      description: Returns all notifications in the current section
+      parameters:
+      - description: Project ID
+        in: path
+        name: project_id
+        required: true
+        type: string
+      - description: Section ID
+        in: path
+        name: section_id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -279,7 +459,13 @@ paths:
       - info
   /{project}/collaborator:
     delete:
-      description: Deletes collaborator
+      description: Removes a collaborator from the current project
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -299,7 +485,13 @@ paths:
       tags:
       - delete
     post:
-      description: Adds collaborators
+      description: Adds a collaborator to the current project
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -320,7 +512,13 @@ paths:
       - add
   /{project}/collaborators:
     get:
-      description: Gets collaborators
+      description: Returns all collaborators of the project
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -336,12 +534,28 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/internal_app.errorResponse'
-      summary: Gets collaborators
+      summary: Returns collaborators
       tags:
       - info
   /{project}/section:
     post:
-      description: Creates section
+      description: Creates a section in the project
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Section title
+        in: body
+        name: title
+        schema:
+          type: string
+      - description: Section color
+        in: body
+        name: color
+        schema:
+          type: string
       produces:
       - application/json
       responses:
@@ -362,7 +576,13 @@ paths:
       - add
   /{project}/sections:
     get:
-      description: Gets all sections
+      description: Returns all sections of the current project
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -380,12 +600,12 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/internal_app.errorResponse'
-      summary: Gets all sections
+      summary: Returns all sections
       tags:
       - info
   /favorites:
     get:
-      description: Gets favorite proj
+      description: Returns favorite projects
       produces:
       - application/json
       responses:
@@ -403,7 +623,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/internal_app.errorResponse'
-      summary: Gets favorite proj
+      summary: Gets favorite projects
       tags:
       - info
   /login:
@@ -490,7 +710,7 @@ paths:
       - add
   /projects:
     get:
-      description: Gets all proj
+      description: Returns all projects
       produces:
       - application/json
       responses:
@@ -508,7 +728,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/internal_app.errorResponse'
-      summary: Gets all proj
+      summary: Gets all projects
       tags:
       - info
   /signup:
@@ -530,7 +750,7 @@ paths:
       - auth
   /undelivered_notifications:
     get:
-      description: Gets undelivired notifications
+      description: Allows the manager to view undelivered notifications
       produces:
       - application/json
       responses:
@@ -553,7 +773,7 @@ paths:
       - info
   /upcoming:
     get:
-      description: Gets upcoming notifications
+      description: Returns upcoming notifications
       produces:
       - application/json
       responses:

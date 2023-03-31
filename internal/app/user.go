@@ -17,7 +17,7 @@ func (a *Application) CreateProject(c *gin.Context) {
 
 // GetUpcomingNotifications godoc
 // @Summary      Gets upcoming notifications
-// @Description  Gets upcoming notifications
+// @Description  Returns upcoming notifications
 // @Tags         info
 // @Produce      json
 // @Success      200 {object} []ds.Notification
@@ -29,8 +29,8 @@ func (a *Application) GetUpcomingNotifications(c *gin.Context) {
 }
 
 // GetFavoriteProjects godoc
-// @Summary      Gets favorite proj
-// @Description  Gets favorite proj
+// @Summary      Gets favorite projects
+// @Description  Returns favorite projects
 // @Tags         info
 // @Produce      json
 // @Success      200 {object} []ds.Project
@@ -42,8 +42,8 @@ func (a *Application) GetFavoriteProjects(c *gin.Context) {
 }
 
 // GetAllProjects godoc
-// @Summary      Gets all proj
-// @Description  Gets all proj
+// @Summary      Gets all projects
+// @Description  Returns all projects
 // @Tags         info
 // @Produce      json
 // @Success      200 {object} []ds.Project

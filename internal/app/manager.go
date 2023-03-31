@@ -4,7 +4,7 @@ import "github.com/gin-gonic/gin"
 
 // GetUndeliviredNotifications godoc
 // @Summary      Gets undelivired notifications
-// @Description  Gets undelivired notifications
+// @Description  Allows the manager to view undelivered notifications
 // @Tags         info
 // @Produce      json
 // @Success      200 {object} []ds.Notification
