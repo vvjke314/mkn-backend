@@ -35,11 +35,12 @@ func (a *Application) StartServer() {
 	r.GET("/upcoming", a.GetUpcomingNotifications)
 	r.GET("/favorites", a.GetFavoriteProjects)
 	r.POST("/favorite", a.AddFavorite)
-	r.GET("/favorite", a.GetFavoriteProject)
-	r.DELETE("/favorite", a.DeleteFavorite)
+	r.GET("/favorite/:project_id", a.GetFavoriteProject)
+	r.DELETE("/favorite/:project_id", a.DeleteFavorite)
 	r.GET("/projects", a.GetAllProjects)
-	r.GET("/owned_projects", a.GetAllOwnedProjects)
+	r.GET("/projects/owned", a.GetAllOwnedProjects)
 	r.PUT("/email", a.ChangeEmail)
+	r.GET("/projects/latest", a.LastThreeProjects)
 
 	//project
 	r.PUT("/project/:project", a.UpdateProject)

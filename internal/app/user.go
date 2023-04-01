@@ -47,10 +47,11 @@ func (a *Application) GetFavoriteProjects(c *gin.Context) {
 // @Description  Returns favorite projects
 // @Tags         info
 // @Produce      json
+// @Param project_id path string true "Project ID"
 // @Success      200 {object} ds.FavoriteProject
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /favorites [get]
+// @Router      /favorites/:project_id [get]
 func (a *Application) GetFavoriteProject(c *gin.Context) {
 
 }
@@ -76,7 +77,7 @@ func (a *Application) GetAllProjects(c *gin.Context) {
 // @Success      200 {object} []ds.Project
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /owned_projects [get]
+// @Router      /projects/owned [get]
 func (a *Application) GetAllOwnedProjects(c *gin.Context) {
 
 }
@@ -100,10 +101,11 @@ func (a *Application) AddFavorite(c *gin.Context) {
 // @Description  Delete favorite user project
 // @Tags         delete
 // @Produce      json
+// @Param project_id path string true "Project ID"
 // @Success      200 {object} []ds.FavoriteProject
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /favorite [delete]
+// @Router      /favorite/:project_id [delete]
 func (a *Application) DeleteFavorite(c *gin.Context) {
 
 }
@@ -118,5 +120,18 @@ func (a *Application) DeleteFavorite(c *gin.Context) {
 // @Failure 500 {object} errorResponse
 // @Router      /email [put]
 func (a *Application) ChangeEmail(c *gin.Context) {
+
+}
+
+// LastThreeProjects godoc
+// @Summary      Returns last 3 projects
+// @Description  Returns the last three projects by last edit time
+// @Tags         info
+// @Produce      json
+// @Success      200 {object} []ds.Project
+// @Failure 403 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Router      /projects/latest [get]
+func (a *Application) LastThreeProjects(c *gin.Context) {
 
 }
