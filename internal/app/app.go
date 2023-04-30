@@ -1,18 +1,41 @@
 package app
 
-import "context"
+import (
+	"context"
+	"fmt"
+	"mkn-backend/internal/pkg/config"
+	"mkn-backend/internal/pkg/repository"
+
+	log "github.com/sirupsen/logrus"
+)
 
 type Application struct {
-	ctx context.Context
-	//repo repository.Repository #ADD REPO via GORM
+	ctx    *context.Context
+	repo   *repository.Repository
+	config *config.Config
 }
 
-func New(ctx context.Context) *Application {
-	return &Application{
-		ctx: ctx,
+func New(ctx context.Context) (*Application, error) {
+	cfg, err := config.NewConfig(ctx)
+	if err != nil {
+		return nil, err
 	}
+
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", cfg.DataBase.Host, cfg.DataBase.User, cfg.DataBase.Password, cfg.DataBase.Name, cfg.DataBase.Port)
+	repo, err := repository.New(dsn)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Application{
+		ctx:    &ctx,
+		repo:   repo,
+		config: cfg,
+	}, nil
 }
 
 func (a *Application) Run() {
+	log.Println("Application started")
 	a.StartServer()
+	log.Println("Application shutted down")
 }

@@ -1,5 +1,19 @@
 basePath: /
 definitions:
+  app.SignUpReqBody:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  app.errorResponse:
+    properties:
+      message:
+        type: string
+    type: object
   ds.Collaboration:
     properties:
       id:
@@ -68,13 +82,10 @@ definitions:
       id:
         type: string
       is_manager:
-        type: boolean
-      username:
+        type: integer
+      password:
         type: string
-    type: object
-  internal_app.errorResponse:
-    properties:
-      message:
+      username:
         type: string
     type: object
 host: 127.0.0.1:8080
@@ -101,11 +112,11 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
       summary: Changes user email
       tags:
       - change
@@ -130,11 +141,11 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
       summary: Add favorite project
       tags:
       - add
@@ -159,11 +170,11 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
       summary: Delete favorite project
       tags:
       - delete
@@ -182,11 +193,11 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
       summary: Gets favorite projects
       tags:
       - info
@@ -209,11 +220,11 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
       summary: Gets favorite projects
       tags:
       - info
@@ -230,7 +241,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
       summary: Login user
       tags:
       - auth
@@ -247,11 +258,11 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
       summary: Logout user
       tags:
       - auth
@@ -270,15 +281,15 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
       summary: Creates project
       tags:
       - add
@@ -303,15 +314,15 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
       summary: Deletes project
       tags:
       - delete
@@ -335,15 +346,15 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
       summary: Update project
       tags:
       - change
@@ -368,11 +379,11 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
       summary: Deletes collaborator
       tags:
       - delete
@@ -396,11 +407,11 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
       summary: Adds collaborators
       tags:
       - add
@@ -425,11 +436,11 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
       summary: Returns collaborators
       tags:
       - info
@@ -454,11 +465,11 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
       summary: Creates section
       tags:
       - add
@@ -483,11 +494,11 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
       summary: Returns all sections
       tags:
       - info
@@ -512,15 +523,15 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
       summary: Deletes section
       tags:
       - delete
@@ -544,15 +555,15 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
       summary: Updates section
       tags:
       - change
@@ -577,11 +588,11 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
       summary: Creates notification
       tags:
       - add
@@ -606,11 +617,11 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
       summary: Gets All Notifications
       tags:
       - info
@@ -635,15 +646,15 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
       summary: Delete notifications
       tags:
       - delete
@@ -665,15 +676,15 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
       summary: Gets Notification
       tags:
       - info
@@ -698,15 +709,15 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
       summary: Update notifications
       tags:
       - change
@@ -725,11 +736,11 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
       summary: Gets all projects
       tags:
       - info
@@ -748,11 +759,11 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
       summary: Returns last 3 projects
       tags:
       - info
@@ -771,17 +782,24 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
       summary: Gets all owned project
       tags:
       - info
   /signup:
     post:
       description: Signup user
+      parameters:
+      - description: User data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/app.SignUpReqBody'
       produces:
       - application/json
       responses:
@@ -792,7 +810,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
       summary: Signup user
       tags:
       - auth
@@ -811,11 +829,11 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
       summary: Gets undelivired notifications
       tags:
       - info
@@ -834,11 +852,11 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_app.errorResponse'
+            $ref: '#/definitions/app.errorResponse'
       summary: Gets upcoming notifications
       tags:
       - info

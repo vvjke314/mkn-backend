@@ -1,9 +1,9 @@
 run:
-		go run cmd/main.go
+		go run cmd/mkn/main.go
 swagger:
-		swag init --parseDependency --parseInternal -g cmd/main.go
+		swag init -g cmd/mkn/main.go
 build:
-		go build -o bin/main cmd/main.go
+		go build -o bin/main cmd/mkn/main.go
 dbUp:
 		docker-compose up -d
 migrate:

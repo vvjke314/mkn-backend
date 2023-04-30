@@ -14,6 +14,9 @@ import (
 // @BasePath  /
 func main() {
 	ctx := context.Background()
-	a := app.New(ctx)
+	a, err := app.New(ctx)
+	if err != nil {
+		panic("Can't create application")
+	}
 	a.Run()
 }
