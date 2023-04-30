@@ -7,8 +7,8 @@
 - gorm
 - migrations (goose)
 - cfg
-- logger
+- *logger*
 - jwt
 - auth check
-- *redis*
+- redis
 - kafka producer
