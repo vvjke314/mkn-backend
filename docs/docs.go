@@ -12,7 +12,7 @@ const docTemplate = `{
         "title": "{{.Title}}",
         "contact": {
             "name": "MKN Support",
-            "email": "mkn-notifyer@mail.ru"
+            "email": "mkn-notifyer@mail.ruv"
         },
         "version": "{{.Version}}"
     },
@@ -56,6 +56,11 @@ const docTemplate = `{
         },
         "/favorite": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Add favorite project",
                 "produces": [
                     "application/json"
@@ -100,6 +105,11 @@ const docTemplate = `{
         },
         "/favorite/{project_id}": {
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Delete favorite user project",
                 "produces": [
                     "application/json"
@@ -228,6 +238,17 @@ const docTemplate = `{
                     "auth"
                 ],
                 "summary": "Login user",
+                "parameters": [
+                    {
+                        "description": "User data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/app.LoginReqBody"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -246,6 +267,11 @@ const docTemplate = `{
         },
         "/logout": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Logout user",
                 "produces": [
                     "application/json"
@@ -278,6 +304,11 @@ const docTemplate = `{
         },
         "/project": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Creates project",
                 "produces": [
                     "application/json"
@@ -286,14 +317,22 @@ const docTemplate = `{
                     "add"
                 ],
                 "summary": "Creates project",
+                "parameters": [
+                    {
+                        "description": "Project data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ds.Project"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/ds.Project"
-                            }
+                            "$ref": "#/definitions/ds.Project"
                         }
                     },
                     "403": {
@@ -1034,6 +1073,11 @@ const docTemplate = `{
         },
         "/projects/owned": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Gets all owned project",
                 "produces": [
                     "application/json"
@@ -1176,8 +1220,28 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "app.LoginReqBody": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "app.SignUpReqBody": {
             "type": "object",
+            "required": [
+                "email",
+                "password",
+                "username"
+            ],
             "properties": {
                 "email": {
                     "type": "string"
@@ -1254,6 +1318,11 @@ const docTemplate = `{
         },
         "ds.Project": {
             "type": "object",
+            "required": [
+                "color",
+                "description",
+                "title"
+            ],
             "properties": {
                 "color": {
                     "type": "string"
@@ -1311,6 +1380,13 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`

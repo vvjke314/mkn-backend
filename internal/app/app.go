@@ -4,14 +4,17 @@ import (
 	"context"
 	"fmt"
 	"mkn-backend/internal/pkg/config"
+	"mkn-backend/internal/pkg/redisClient"
 	"mkn-backend/internal/pkg/repository"
 
+	"github.com/redis/go-redis/v9"
 	log "github.com/sirupsen/logrus"
 )
 
 type Application struct {
 	ctx    *context.Context
 	repo   *repository.Repository
+	redis  *redis.Client
 	config *config.Config
 }
 
@@ -27,9 +30,12 @@ func New(ctx context.Context) (*Application, error) {
 		return nil, err
 	}
 
+	redis := redisClient.New()
+
 	return &Application{
 		ctx:    &ctx,
 		repo:   repo,
+		redis:  redis,
 		config: cfg,
 	}, nil
 }

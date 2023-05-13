@@ -9,9 +9,12 @@ import (
 // @version         1.0
 // @description     Notification backend service.
 // @contact.name   MKN Support
-// @contact.email  mkn-notifyer@mail.ru
+// @contact.email  mkn-notifyer@mail.ruv
 // @host      127.0.0.1:8080
 // @BasePath  /
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
 func main() {
 	ctx := context.Background()
 	a, err := app.New(ctx)

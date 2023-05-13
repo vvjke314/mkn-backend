@@ -30,39 +30,46 @@ func (a *Application) StartServer() {
 	r.GET("/logout", a.Logout)
 	r.POST("/signup", a.SignUp)
 
-	//user
-	r.POST("/project", a.CreateProject)
-	r.GET("/upcoming", a.GetUpcomingNotifications)
-	r.GET("/favorites", a.GetFavoriteProjects)
-	r.POST("/favorite", a.AddFavorite)
-	r.GET("/favorite/:project_id", a.GetFavoriteProject)
-	r.DELETE("/favorite/:project_id", a.DeleteFavorite)
 	r.GET("/projects", a.GetAllProjects)
-	r.GET("/projects/owned", a.GetAllOwnedProjects)
-	r.PUT("/email", a.ChangeEmail)
-	r.GET("/projects/latest", a.LastThreeProjects)
 
-	//project
-	r.PUT("/project/:project", a.UpdateProject)
-	r.DELETE("/project/:project_id", a.DeleteProject)
-	r.GET("/project/:project_id/collaborators", a.GetCollaborators)
-	r.GET("/project/:project_id/sections", a.GetAllSections)
-	r.POST("/project/:project_id/collaborator", a.AddCollaborator)
-	r.DELETE("/project/:project_id/collaborator", a.DeleteCollaborator)
+	authorized := r.Group("/")
 
-	//section
-	r.PUT("/project/section/:section_id", a.UpdateSection)
-	r.DELETE("/project/section/:section_id", a.DeleteSection)
-	r.POST("/project/:project_id/section", a.CreateSection)
-	r.GET("/project/section/:section_id/notifications", a.GetAllNotifications)
-	r.GET("/project/section/notification/:notification_id", a.GetNotification)
+	authorized.Use(a.UserIdentity)
+	{
+		//user
+		authorized.POST("/project", a.CreateProject)
+		authorized.GET("/upcoming", a.GetUpcomingNotifications)
+		authorized.GET("/favorites", a.GetFavoriteProjects)
+		authorized.POST("/favorite", a.AddFavorite)
+		authorized.GET("/favorite/:project_id", a.GetFavoriteProject)
+		authorized.DELETE("/favorite/:project_id", a.DeleteFavorite)
+		authorized.GET("/projects/owned", a.GetAllOwnedProjects)
+		authorized.PUT("/email", a.ChangeEmail)
+		authorized.GET("/projects/latest", a.LastThreeProjects)
 
-	//notification
-	r.PUT("/project/section/notification/:notification_id", a.UpdateNotification)
-	r.DELETE("/project/section/notification/:notification_id", a.DeleteNotification)
-	r.POST("/project/section/:section_id/notification", a.CreateNotification)
+		//project
+		authorized.PUT("/project/:project", a.UpdateProject)
+		authorized.DELETE("/project/:project_id", a.DeleteProject)
+		authorized.GET("/project/:project_id/collaborators", a.GetCollaborators)
+		authorized.GET("/project/:project_id/sections", a.GetAllSections)
+		authorized.POST("/project/:project_id/collaborator", a.AddCollaborator)
+		authorized.DELETE("/project/:project_id/collaborator", a.DeleteCollaborator)
 
-	//moderator
-	r.GET("/undelivered_notifications", a.GetUndeliviredNotifications)
+		//section
+		authorized.PUT("/project/section/:section_id", a.UpdateSection)
+		authorized.DELETE("/project/section/:section_id", a.DeleteSection)
+		authorized.POST("/project/:project_id/section", a.CreateSection)
+		authorized.GET("/project/section/:section_id/notifications", a.GetAllNotifications)
+		authorized.GET("/project/section/notification/:notification_id", a.GetNotification)
+
+		//notification
+		authorized.PUT("/project/section/notification/:notification_id", a.UpdateNotification)
+		authorized.DELETE("/project/section/notification/:notification_id", a.DeleteNotification)
+		authorized.POST("/project/section/:section_id/notification", a.CreateNotification)
+
+		//moderator
+		authorized.GET("/undelivered_notifications", a.GetUndeliviredNotifications)
+	}
+
 	r.Run()
 }
