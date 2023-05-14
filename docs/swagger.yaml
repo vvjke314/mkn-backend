@@ -28,6 +28,13 @@ definitions:
       message:
         type: string
     type: object
+  ds.ChangeEmailRequest:
+    properties:
+      email:
+        type: string
+    required:
+    - email
+    type: object
   ds.Collaboration:
     properties:
       id:
@@ -36,6 +43,19 @@ definitions:
         type: string
       user_id:
         type: string
+    type: object
+  ds.CreateProjectRequest:
+    properties:
+      color:
+        type: string
+      description:
+        type: string
+      title:
+        type: string
+    required:
+    - color
+    - description
+    - title
     type: object
   ds.FavoriteProject:
     properties:
@@ -93,6 +113,15 @@ definitions:
       title:
         type: string
     type: object
+  ds.UpdateProjectRequest:
+    properties:
+      color:
+        type: string
+      description:
+        type: string
+      title:
+        type: string
+    type: object
   ds.User:
     properties:
       email:
@@ -109,7 +138,7 @@ definitions:
 host: 127.0.0.1:8080
 info:
   contact:
-    email: mkn-notifyer@mail.ruv
+    email: mkn-notifyer@mail.ru
     name: MKN Support
   description: Notification backend service.
   title: MKN API
@@ -118,15 +147,20 @@ paths:
   /email:
     put:
       description: Changes user email
+      parameters:
+      - description: New user email
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/ds.ChangeEmailRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/ds.FavoriteProject'
-            type: array
+            $ref: '#/definitions/ds.User'
         "403":
           description: Forbidden
           schema:
@@ -135,6 +169,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/app.errorResponse'
+      security:
+      - BearerAuth: []
       summary: Changes user email
       tags:
       - change
@@ -200,30 +236,6 @@ paths:
       summary: Delete favorite project
       tags:
       - delete
-  /favorites:
-    get:
-      description: Returns favorite projects
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/ds.FavoriteProject'
-            type: array
-        "403":
-          description: Forbidden
-          schema:
-            $ref: '#/definitions/app.errorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/app.errorResponse'
-      summary: Gets favorite projects
-      tags:
-      - info
-  /favorites/{project_id}:
     get:
       description: Returns favorite projects
       parameters:
@@ -238,7 +250,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ds.FavoriteProject'
+            $ref: '#/definitions/ds.Project'
         "403":
           description: Forbidden
           schema:
@@ -247,6 +259,33 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/app.errorResponse'
+      security:
+      - BearerAuth: []
+      summary: Gets favorite projects
+      tags:
+      - info
+  /favorites:
+    get:
+      description: Returns favorite projects
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ds.Project'
+            type: array
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/app.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.errorResponse'
+      security:
+      - BearerAuth: []
       summary: Gets favorite projects
       tags:
       - info
@@ -306,7 +345,7 @@ paths:
         name: data
         required: true
         schema:
-          $ref: '#/definitions/ds.Project'
+          $ref: '#/definitions/ds.CreateProjectRequest'
       produces:
       - application/json
       responses:
@@ -333,7 +372,7 @@ paths:
       - add
   /project/{project_id}:
     delete:
-      description: Deletes a specific project
+      description: Deletes a specific project and returns all owned projects
       parameters:
       - description: Project ID
         in: path
@@ -361,17 +400,26 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/app.errorResponse'
+      security:
+      - BearerAuth: []
       summary: Deletes project
       tags:
       - delete
     put:
       description: Updates a specific project according to the entered parameters
+        and returns all owned projects
       parameters:
       - description: Project ID
         in: path
         name: project_id
         required: true
         type: string
+      - description: New project information
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/ds.UpdateProjectRequest'
       produces:
       - application/json
       responses:
@@ -393,6 +441,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/app.errorResponse'
+      security:
+      - BearerAuth: []
       summary: Update project
       tags:
       - change
@@ -802,6 +852,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/app.errorResponse'
+      security:
+      - BearerAuth: []
       summary: Returns last 3 projects
       tags:
       - info

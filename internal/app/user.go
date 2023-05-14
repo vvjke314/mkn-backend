@@ -16,7 +16,7 @@ import (
 // @Description  Creates project
 // @Tags         add
 // @Produce      json
-// @Param data body ds.Project true "Project data"
+// @Param data body ds.CreateProjectRequest true "Project data"
 // @Security BearerAuth
 // @Success      200 {object} ds.Project
 // @Failure 403 {object} errorResponse
@@ -24,7 +24,7 @@ import (
 // @Failure 500 {object} errorResponse
 // @Router      /project [post]
 func (a *Application) CreateProject(c *gin.Context) {
-	req := &ds.Project{}
+	req := &ds.CreateProjectRequest{}
 
 	userId, err := a.GetUserIdByJWT(c)
 	if err != nil {
@@ -40,15 +40,20 @@ func (a *Application) CreateProject(c *gin.Context) {
 		return
 	}
 
-	req.Id = uuid.New()
-	req.OwnerId, err = uuid.Parse(userId)
+	proj := &ds.Project{
+		Title:       req.Title,
+		Color:       req.Color,
+		Description: req.Description,
+	}
+	proj.Id = uuid.New()
+	proj.OwnerId, err = uuid.Parse(userId)
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, "Can't format uuid correctly")
 		return
 	}
-	req.LastEdited = time.Now().UTC()
+	proj.LastEdited = time.Now().UTC()
 
-	pct, err := a.repo.CreateProject(req)
+	pct, err := a.repo.CreateProject(proj)
 	if err != nil {
 		log.Println(err)
 		newErrorResponse(c, http.StatusBadRequest, "Can't create project")
@@ -76,12 +81,38 @@ func (a *Application) GetUpcomingNotifications(c *gin.Context) {
 // @Description  Returns favorite projects
 // @Tags         info
 // @Produce      json
-// @Success      200 {object} []ds.FavoriteProject
+// @Security BearerAuth
+// @Success      200 {object} []ds.Project
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /favorites [get]
 func (a *Application) GetFavoriteProjects(c *gin.Context) {
+	userId, err := a.GetUserIdByJWT(c)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusUnauthorized, "No such authoriuzed user")
+		return
+	}
 
+	favProjects, err := a.repo.GetFavoriteProjects(userId)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusBadRequest, "Can't get all owned projects")
+		return
+	}
+
+	projects := make([]ds.Project, 0, 50)
+	for _, favProject := range favProjects {
+		p, err := a.repo.GetProjectById(favProject.ProjectId.String())
+		if err != nil {
+			log.Println(err)
+			newErrorResponse(c, http.StatusInternalServerError, "Can't get projects")
+			return
+		}
+		projects = append(projects, p)
+	}
+
+	c.JSON(http.StatusOK, projects)
 }
 
 // GetFavoriteProject godoc
@@ -89,13 +120,37 @@ func (a *Application) GetFavoriteProjects(c *gin.Context) {
 // @Description  Returns favorite projects
 // @Tags         info
 // @Produce      json
+// @Security BearerAuth
 // @Param project_id path string true "Project ID"
-// @Success      200 {object} ds.FavoriteProject
+// @Success      200 {object} ds.Project
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /favorites/{project_id} [get]
+// @Router      /favorite/{project_id} [get]
 func (a *Application) GetFavoriteProject(c *gin.Context) {
+	userId, err := a.GetUserIdByJWT(c)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusUnauthorized, "No such authoriuzed user")
+		return
+	}
 
+	projectId := c.Param("project_id")
+
+	favProject, err := a.repo.GetFavoriteProject(userId, projectId)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusBadRequest, "This user does not have this favorite project added")
+		return
+	}
+
+	project, err := a.repo.GetProjectById(favProject.ProjectId.String())
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusInternalServerError, "Can't get favorite project")
+		return
+	}
+
+	c.JSON(http.StatusOK, project)
 }
 
 // GetAllProjects godoc
@@ -225,12 +280,43 @@ func (a *Application) DeleteFavorite(c *gin.Context) {
 // @Description  Changes user email
 // @Tags         change
 // @Produce      json
-// @Success      200 {object} []ds.FavoriteProject
+// @Param data body ds.ChangeEmailRequest true "New user email"
+// @Security BearerAuth
+// @Success      200 {object} ds.User
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /email [put]
 func (a *Application) ChangeEmail(c *gin.Context) {
+	userId, err := a.GetUserIdByJWT(c)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusUnauthorized, "No such authoriuzed user")
+		return
+	}
 
+	req := ds.ChangeEmailRequest{}
+	err = json.NewDecoder(c.Request.Body).Decode(&req)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusBadRequest, "Bad request")
+		return
+	}
+
+	err = a.repo.ChangeEmail(userId, req.Email)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusBadRequest, "Can't change email")
+		return
+	}
+
+	user, err := a.repo.GetUserById(userId)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusInternalServerError, "Can't get user by ID")
+		return
+	}
+
+	c.JSON(http.StatusOK, user)
 }
 
 // LastThreeProjects godoc
@@ -238,10 +324,25 @@ func (a *Application) ChangeEmail(c *gin.Context) {
 // @Description  Returns the last three projects by last edit time
 // @Tags         info
 // @Produce      json
+// @Security BearerAuth
 // @Success      200 {object} []ds.Project
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /projects/latest [get]
 func (a *Application) LastThreeProjects(c *gin.Context) {
+	userId, err := a.GetUserIdByJWT(c)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusUnauthorized, "No such authoriuzed user")
+		return
+	}
 
+	projects, err := a.repo.LastThreeProjects(userId)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusInternalServerError, "")
+		return
+	}
+
+	c.JSON(http.StatusOK, projects)
 }

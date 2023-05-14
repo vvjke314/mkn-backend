@@ -96,3 +96,33 @@ func (r *Repository) DeleteFavorite(userId, projectId string) error {
 
 	return nil
 }
+
+func (r *Repository) GetProjectById(projectId string) (ds.Project, error) {
+	project := ds.Project{}
+
+	err := r.db.Where("id = ?", projectId).First(&project).Error
+	if err != nil {
+		return ds.Project{}, errors.Wrap(err, "Can't get project in repo")
+	}
+
+	return project, nil
+}
+
+func (r *Repository) ChangeEmail(userId, newEmail string) error {
+	err := r.db.Model(&ds.User{}).Where("id = ?", userId).Update("email", newEmail).Error
+	if err != nil {
+		return errors.Wrap(err, "Can't change email in repo")
+	}
+
+	return nil
+}
+
+func (r *Repository) LastThreeProjects(userId string) ([]ds.Project, error) {
+	projects := []ds.Project{}
+	err := r.db.Order("last_edited desc").Where("owner_id = ?", userId).Limit(3).Find(&projects).Error
+	if err != nil {
+		return []ds.Project{}, errors.Wrap(err, "Can't get projects from repo")
+	}
+
+	return projects, nil
+}

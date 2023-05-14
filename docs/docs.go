@@ -12,7 +12,7 @@ const docTemplate = `{
         "title": "{{.Title}}",
         "contact": {
             "name": "MKN Support",
-            "email": "mkn-notifyer@mail.ruv"
+            "email": "mkn-notifyer@mail.ru"
         },
         "version": "{{.Version}}"
     },
@@ -21,6 +21,11 @@ const docTemplate = `{
     "paths": {
         "/email": {
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Changes user email",
                 "produces": [
                     "application/json"
@@ -29,14 +34,22 @@ const docTemplate = `{
                     "change"
                 ],
                 "summary": "Changes user email",
+                "parameters": [
+                    {
+                        "description": "New user email",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ds.ChangeEmailRequest"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/ds.FavoriteProject"
-                            }
+                            "$ref": "#/definitions/ds.User"
                         }
                     },
                     "403": {
@@ -104,6 +117,50 @@ const docTemplate = `{
             }
         },
         "/favorite/{project_id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Returns favorite projects",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "info"
+                ],
+                "summary": "Gets favorite projects",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Project ID",
+                        "name": "project_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ds.Project"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/app.errorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/app.errorResponse"
+                        }
+                    }
+                }
+            },
             "delete": {
                 "security": [
                     {
@@ -154,6 +211,11 @@ const docTemplate = `{
         },
         "/favorites": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Returns favorite projects",
                 "produces": [
                     "application/json"
@@ -168,49 +230,8 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/ds.FavoriteProject"
+                                "$ref": "#/definitions/ds.Project"
                             }
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "$ref": "#/definitions/app.errorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/app.errorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/favorites/{project_id}": {
-            "get": {
-                "description": "Returns favorite projects",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "info"
-                ],
-                "summary": "Gets favorite projects",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Project ID",
-                        "name": "project_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/ds.FavoriteProject"
                         }
                     },
                     "403": {
@@ -324,7 +345,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/ds.Project"
+                            "$ref": "#/definitions/ds.CreateProjectRequest"
                         }
                     }
                 ],
@@ -687,7 +708,12 @@ const docTemplate = `{
         },
         "/project/{project_id}": {
             "put": {
-                "description": "Updates a specific project according to the entered parameters",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Updates a specific project according to the entered parameters and returns all owned projects",
                 "produces": [
                     "application/json"
                 ],
@@ -702,6 +728,15 @@ const docTemplate = `{
                         "name": "project_id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "New project information",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ds.UpdateProjectRequest"
+                        }
                     }
                 ],
                 "responses": {
@@ -735,7 +770,12 @@ const docTemplate = `{
                 }
             },
             "delete": {
-                "description": "Deletes a specific project",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Deletes a specific project and returns all owned projects",
                 "produces": [
                     "application/json"
                 ],
@@ -1038,6 +1078,11 @@ const docTemplate = `{
         },
         "/projects/latest": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Returns the last three projects by last edit time",
                 "produces": [
                     "application/json"
@@ -1262,6 +1307,17 @@ const docTemplate = `{
                 }
             }
         },
+        "ds.ChangeEmailRequest": {
+            "type": "object",
+            "required": [
+                "email"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                }
+            }
+        },
         "ds.Collaboration": {
             "type": "object",
             "properties": {
@@ -1272,6 +1328,25 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "ds.CreateProjectRequest": {
+            "type": "object",
+            "required": [
+                "color",
+                "description",
+                "title"
+            ],
+            "properties": {
+                "color": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "title": {
                     "type": "string"
                 }
             }
@@ -1354,6 +1429,20 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "project_id": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "ds.UpdateProjectRequest": {
+            "type": "object",
+            "properties": {
+                "color": {
+                    "type": "string"
+                },
+                "description": {
                     "type": "string"
                 },
                 "title": {

@@ -26,34 +26,34 @@ func (a *Application) StartServer() {
 	r.Use(CORSMiddleware())
 
 	//authorize
-	r.POST("/login", a.Login)
-	r.GET("/logout", a.Logout)
-	r.POST("/signup", a.SignUp)
+	r.POST("/login", a.Login)   //+
+	r.GET("/logout", a.Logout)  //+
+	r.POST("/signup", a.SignUp) //+
 
-	r.GET("/projects", a.GetAllProjects)
+	r.GET("/projects", a.GetAllProjects) //+
 
 	authorized := r.Group("/")
 
 	authorized.Use(a.UserIdentity)
 	{
 		//user
-		authorized.POST("/project", a.CreateProject)
-		authorized.GET("/upcoming", a.GetUpcomingNotifications)
-		authorized.GET("/favorites", a.GetFavoriteProjects)
-		authorized.POST("/favorite", a.AddFavorite)
-		authorized.GET("/favorite/:project_id", a.GetFavoriteProject)
-		authorized.DELETE("/favorite/:project_id", a.DeleteFavorite)
-		authorized.GET("/projects/owned", a.GetAllOwnedProjects)
-		authorized.PUT("/email", a.ChangeEmail)
-		authorized.GET("/projects/latest", a.LastThreeProjects)
+		authorized.POST("/project", a.CreateProject)                  //+
+		authorized.GET("/upcoming", a.GetUpcomingNotifications)       //
+		authorized.GET("/favorites", a.GetFavoriteProjects)           //+
+		authorized.POST("/favorite", a.AddFavorite)                   //+
+		authorized.GET("/favorite/:project_id", a.GetFavoriteProject) //+
+		authorized.DELETE("/favorite/:project_id", a.DeleteFavorite)  //+
+		authorized.GET("/projects/owned", a.GetAllOwnedProjects)      //+
+		authorized.PUT("/email", a.ChangeEmail)                       //+
+		authorized.GET("/projects/latest", a.LastThreeProjects)       //+
 
 		//project
-		authorized.PUT("/project/:project", a.UpdateProject)
-		authorized.DELETE("/project/:project_id", a.DeleteProject)
-		authorized.GET("/project/:project_id/collaborators", a.GetCollaborators)
-		authorized.GET("/project/:project_id/sections", a.GetAllSections)
-		authorized.POST("/project/:project_id/collaborator", a.AddCollaborator)
-		authorized.DELETE("/project/:project_id/collaborator", a.DeleteCollaborator)
+		authorized.PUT("/project/:project_id", a.UpdateProject)                      //+
+		authorized.DELETE("/project/:project_id", a.DeleteProject)                   //+
+		authorized.GET("/project/:project_id/collaborators", a.GetCollaborators)     //
+		authorized.GET("/project/:project_id/sections", a.GetAllSections)            //
+		authorized.POST("/project/:project_id/collaborator", a.AddCollaborator)      //
+		authorized.DELETE("/project/:project_id/collaborator", a.DeleteCollaborator) //
 
 		//section
 		authorized.PUT("/project/section/:section_id", a.UpdateSection)
