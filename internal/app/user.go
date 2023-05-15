@@ -221,17 +221,23 @@ func (a *Application) AddFavorite(c *gin.Context) {
 	}
 
 	projectId := c.Query("project_id")
+
+	if a.repo.IsFavorite(userId, projectId) {
+		newErrorResponse(c, http.StatusBadRequest, "This already is your favorite project")
+		return
+	}
+
 	err = a.repo.AddFavorite(userId, projectId)
 	if err != nil {
 		log.Println(err)
-		newErrorResponse(c, http.StatusUnauthorized, "Can't add favorite project")
+		newErrorResponse(c, http.StatusInternalServerError, "Can't add favorite project")
 		return
 	}
 
 	favoriteProjects, err := a.repo.GetFavoriteProjects(userId)
 	if err != nil {
 		log.Println(err)
-		newErrorResponse(c, http.StatusUnauthorized, "Can't return favorite projects")
+		newErrorResponse(c, http.StatusInternalServerError, "Can't return favorite projects")
 		return
 	}
 
@@ -345,4 +351,21 @@ func (a *Application) LastThreeProjects(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, projects)
+}
+
+// ResendNotification godoc
+// @Summary      Resend notification
+// @Description  Resend notification
+// @Tags         change
+// @Produce      json
+// @Security BearerAuth
+// @Param data body ds.ResendNotificationRequest true "Section information"
+// @Param notification_id path string true "Notification ID"
+// @Success 200 {object} []ds.Notification
+// @Failure 403 {object} errorResponse
+// @Failure 404 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Router      /project/section/notification/resend/{notification_id} [put]
+func (a *Application) ResendNotification(c *gin.Context) {
+
 }

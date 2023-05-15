@@ -126,3 +126,11 @@ func (r *Repository) LastThreeProjects(userId string) ([]ds.Project, error) {
 
 	return projects, nil
 }
+
+func (r *Repository) IsFavorite(userId, projectId string) bool {
+	if 0 == r.db.Where("user_id = ? AND project_id = ?", userId, projectId).First(&ds.FavoriteProject{}).RowsAffected {
+		return false
+	}
+
+	return true
+}

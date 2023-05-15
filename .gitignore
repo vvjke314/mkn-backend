@@ -3,4 +3,3 @@ bin
 go.mod
 go.sum
 config.toml
-docker-compose.yml

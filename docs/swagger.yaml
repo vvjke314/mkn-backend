@@ -57,6 +57,16 @@ definitions:
     - description
     - title
     type: object
+  ds.CreateSectionRequest:
+    properties:
+      color:
+        type: string
+      title:
+        type: string
+    required:
+    - color
+    - title
+    type: object
   ds.FavoriteProject:
     properties:
       id:
@@ -102,6 +112,11 @@ definitions:
     - description
     - title
     type: object
+  ds.ResendNotificationRequest:
+    properties:
+      title:
+        type: string
+    type: object
   ds.Section:
     properties:
       color:
@@ -118,6 +133,13 @@ definitions:
       color:
         type: string
       description:
+        type: string
+      title:
+        type: string
+    type: object
+  ds.UpdateSectionRequest:
+    properties:
+      color:
         type: string
       title:
         type: string
@@ -448,8 +470,14 @@ paths:
       - change
   /project/{project_id}/collaborator:
     delete:
-      description: Removes a collaborator from the current project
+      description: Removes a collaborator from the current project and returns all
+        collaborators of this project
       parameters:
+      - description: Collaborator ID
+        in: query
+        name: collaborator_id
+        required: true
+        type: string
       - description: Project ID
         in: path
         name: project_id
@@ -472,12 +500,20 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/app.errorResponse'
+      security:
+      - BearerAuth: []
       summary: Deletes collaborator
       tags:
       - delete
     post:
-      description: Adds a collaborator to the current project
+      description: Adds a collaborator to the current project and returns all collaborators
+        of this project
       parameters:
+      - description: Collaborator ID
+        in: query
+        name: collaborator_id
+        required: true
+        type: string
       - description: Project ID
         in: path
         name: project_id
@@ -490,7 +526,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/ds.Collaboration'
+              $ref: '#/definitions/ds.User'
             type: array
         "403":
           description: Forbidden
@@ -500,6 +536,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/app.errorResponse'
+      security:
+      - BearerAuth: []
       summary: Adds collaborators
       tags:
       - add
@@ -519,7 +557,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/ds.Collaboration'
+              $ref: '#/definitions/ds.User'
             type: array
         "403":
           description: Forbidden
@@ -529,6 +567,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/app.errorResponse'
+      security:
+      - BearerAuth: []
       summary: Returns collaborators
       tags:
       - info
@@ -541,6 +581,12 @@ paths:
         name: project_id
         required: true
         type: string
+      - description: Section information
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/ds.CreateSectionRequest'
       produces:
       - application/json
       responses:
@@ -558,6 +604,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/app.errorResponse'
+      security:
+      - BearerAuth: []
       summary: Creates section
       tags:
       - add
@@ -587,6 +635,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/app.errorResponse'
+      security:
+      - BearerAuth: []
       summary: Returns all sections
       tags:
       - info
@@ -620,12 +670,20 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/app.errorResponse'
+      security:
+      - BearerAuth: []
       summary: Deletes section
       tags:
       - delete
     put:
       description: Updates a section in the current project
       parameters:
+      - description: Section information
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/ds.UpdateSectionRequest'
       - description: Section ID
         in: path
         name: section_id
@@ -652,6 +710,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/app.errorResponse'
+      security:
+      - BearerAuth: []
       summary: Updates section
       tags:
       - change
@@ -807,6 +867,47 @@ paths:
           schema:
             $ref: '#/definitions/app.errorResponse'
       summary: Update notifications
+      tags:
+      - change
+  /project/section/notification/resend/{notification_id}:
+    put:
+      description: Resend notification
+      parameters:
+      - description: Section information
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/ds.ResendNotificationRequest'
+      - description: Notification ID
+        in: path
+        name: notification_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ds.Notification'
+            type: array
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/app.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/app.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.errorResponse'
+      security:
+      - BearerAuth: []
+      summary: Resend notification
       tags:
       - change
   /projects:

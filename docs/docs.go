@@ -377,6 +377,70 @@ const docTemplate = `{
                 }
             }
         },
+        "/project/section/notification/resend/{notification_id}": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Resend notification",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "change"
+                ],
+                "summary": "Resend notification",
+                "parameters": [
+                    {
+                        "description": "Section information",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ds.ResendNotificationRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Notification ID",
+                        "name": "notification_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ds.Notification"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/app.errorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/app.errorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/app.errorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/project/section/notification/{notification_id}": {
             "get": {
                 "description": "Returns Notification by ID",
@@ -522,6 +586,11 @@ const docTemplate = `{
         },
         "/project/section/{section_id}": {
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Updates a section in the current project",
                 "produces": [
                     "application/json"
@@ -531,6 +600,15 @@ const docTemplate = `{
                 ],
                 "summary": "Updates section",
                 "parameters": [
+                    {
+                        "description": "Section information",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ds.UpdateSectionRequest"
+                        }
+                    },
                     {
                         "type": "string",
                         "description": "Section ID",
@@ -570,6 +648,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Deletes section from current project",
                 "produces": [
                     "application/json"
@@ -825,7 +908,12 @@ const docTemplate = `{
         },
         "/project/{project_id}/collaborator": {
             "post": {
-                "description": "Adds a collaborator to the current project",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Adds a collaborator to the current project and returns all collaborators of this project",
                 "produces": [
                     "application/json"
                 ],
@@ -834,6 +922,13 @@ const docTemplate = `{
                 ],
                 "summary": "Adds collaborators",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Collaborator ID",
+                        "name": "collaborator_id",
+                        "in": "query",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Project ID",
@@ -848,7 +943,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/ds.Collaboration"
+                                "$ref": "#/definitions/ds.User"
                             }
                         }
                     },
@@ -867,7 +962,12 @@ const docTemplate = `{
                 }
             },
             "delete": {
-                "description": "Removes a collaborator from the current project",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Removes a collaborator from the current project and returns all collaborators of this project",
                 "produces": [
                     "application/json"
                 ],
@@ -876,6 +976,13 @@ const docTemplate = `{
                 ],
                 "summary": "Deletes collaborator",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Collaborator ID",
+                        "name": "collaborator_id",
+                        "in": "query",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Project ID",
@@ -911,6 +1018,11 @@ const docTemplate = `{
         },
         "/project/{project_id}/collaborators": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Returns all collaborators of the project",
                 "produces": [
                     "application/json"
@@ -934,7 +1046,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/ds.Collaboration"
+                                "$ref": "#/definitions/ds.User"
                             }
                         }
                     },
@@ -955,6 +1067,11 @@ const docTemplate = `{
         },
         "/project/{project_id}/section": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Creates a section in the project",
                 "produces": [
                     "application/json"
@@ -970,6 +1087,15 @@ const docTemplate = `{
                         "name": "project_id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "Section information",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ds.CreateSectionRequest"
+                        }
                     }
                 ],
                 "responses": {
@@ -999,6 +1125,11 @@ const docTemplate = `{
         },
         "/project/{project_id}/sections": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Returns all sections of the current project",
                 "produces": [
                     "application/json"
@@ -1351,6 +1482,21 @@ const docTemplate = `{
                 }
             }
         },
+        "ds.CreateSectionRequest": {
+            "type": "object",
+            "required": [
+                "color",
+                "title"
+            ],
+            "properties": {
+                "color": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
         "ds.FavoriteProject": {
             "type": "object",
             "properties": {
@@ -1419,6 +1565,14 @@ const docTemplate = `{
                 }
             }
         },
+        "ds.ResendNotificationRequest": {
+            "type": "object",
+            "properties": {
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
         "ds.Section": {
             "type": "object",
             "properties": {
@@ -1443,6 +1597,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "description": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "ds.UpdateSectionRequest": {
+            "type": "object",
+            "properties": {
+                "color": {
                     "type": "string"
                 },
                 "title": {

@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -45,7 +46,7 @@ func (a *Application) UpdateProject(c *gin.Context) {
 	project, err := a.repo.GetProjectById(projectId)
 	if err != nil {
 		log.Println(err)
-		newErrorResponse(c, http.StatusBadRequest, "Invalid project id")
+		newErrorResponse(c, http.StatusBadRequest, "Invalid project ID")
 		return
 	}
 
@@ -108,7 +109,7 @@ func (a *Application) DeleteProject(c *gin.Context) {
 	project, err := a.repo.GetProjectById(projectId)
 	if err != nil {
 		log.Println(err)
-		newErrorResponse(c, http.StatusBadRequest, "Invalid project id")
+		newErrorResponse(c, http.StatusBadRequest, "Invalid project ID")
 		return
 	}
 
@@ -139,13 +140,66 @@ func (a *Application) DeleteProject(c *gin.Context) {
 // @Description  Creates a section in the project
 // @Tags         add
 // @Produce      json
+// @Security BearerAuth
 // @Param project_id path string true "Project ID"
+// @Param data body ds.CreateSectionRequest true "Section information"
 // @Success 200 {object} []ds.Section
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /project/{project_id}/section [post]
 func (a *Application) CreateSection(c *gin.Context) {
+	req := &ds.CreateSectionRequest{}
 
+	userId, err := a.GetUserIdByJWT(c)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusUnauthorized, "No such authoriuzed user")
+		return
+	}
+
+	projectId := c.Param("project_id")
+
+	project, err := a.repo.GetProjectById(projectId)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusBadRequest, "Invalid project ID")
+		return
+	}
+
+	if project.OwnerId.String() != userId {
+		newErrorResponse(c, http.StatusForbidden, "You cannot modify projects that are not yours")
+		return
+	}
+
+	err = json.NewDecoder(c.Request.Body).Decode(req)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusBadRequest, "Bad request body")
+		return
+	}
+
+	section := &ds.Section{
+		Id:        uuid.New(),
+		Color:     req.Color,
+		Title:     req.Title,
+		ProjectId: uuid.MustParse(projectId),
+	}
+
+	err = a.repo.CreateSection(*section)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusInternalServerError, "Can't create section")
+		return
+	}
+
+	sections, err := a.repo.GetAllSections(projectId)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusInternalServerError, "Can't get all sections")
+		return
+	}
+
+	c.JSON(http.StatusOK, sections)
 }
 
 // GetCollaborators godoc
@@ -153,13 +207,42 @@ func (a *Application) CreateSection(c *gin.Context) {
 // @Description  Returns all collaborators of the project
 // @Tags         info
 // @Produce      json
+// @Security BearerAuth
 // @Param project_id path string true "Project ID"
-// @Success      200 {object} []ds.Collaboration
+// @Success      200 {object} []ds.User
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /project/{project_id}/collaborators [get]
 func (a *Application) GetCollaborators(c *gin.Context) {
+	userId, err := a.GetUserIdByJWT(c)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusUnauthorized, "No such authoriuzed user")
+		return
+	}
 
+	projectId := c.Param("project_id")
+
+	project, err := a.repo.GetProjectById(projectId)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusBadRequest, "Invalid project ID")
+		return
+	}
+
+	if project.OwnerId.String() != userId {
+		newErrorResponse(c, http.StatusForbidden, "You cannot modify projects that are not yours")
+		return
+	}
+
+	users, err := a.repo.GetAllCollaborators(projectId)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusInternalServerError, "Can't get all collaborators")
+		return
+	}
+
+	c.JSON(http.StatusOK, users)
 }
 
 // GetAllSections godoc
@@ -168,38 +251,161 @@ func (a *Application) GetCollaborators(c *gin.Context) {
 // @Tags         info
 // @Produce      json
 // @Param project_id path string true "Project ID"
+// @Security BearerAuth
 // @Success      200 {object} []ds.Section
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /project/{project_id}/sections [get]
 func (a *Application) GetAllSections(c *gin.Context) {
+	userId, err := a.GetUserIdByJWT(c)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusUnauthorized, "No such authoriuzed user")
+		return
+	}
 
+	projectId := c.Param("project_id")
+
+	project, err := a.repo.GetProjectById(projectId)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusBadRequest, "Invalid project ID")
+		return
+	}
+
+	if project.OwnerId.String() != userId && !a.repo.IsCollaborator(userId, projectId) {
+		newErrorResponse(c, http.StatusForbidden, "You cannot watch projects that are not yours")
+		return
+	}
+
+	sections, err := a.repo.GetAllSections(projectId)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusInternalServerError, "Can't get all sections")
+		return
+	}
+
+	c.JSON(http.StatusOK, sections)
 }
 
 // AddCollaborator godoc
 // @Summary      Adds collaborators
-// @Description  Adds a collaborator to the current project
+// @Description  Adds a collaborator to the current project and returns all collaborators of this project
 // @Tags         add
 // @Produce      json
+// @Security BearerAuth
+// @Param collaborator_id query string true "Collaborator ID"
 // @Param project_id path string true "Project ID"
-// @Success 200 {object} []ds.Collaboration
+// @Success 200 {object} []ds.User
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /project/{project_id}/collaborator [post]
 func (a *Application) AddCollaborator(c *gin.Context) {
+	userId, err := a.GetUserIdByJWT(c)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusUnauthorized, "No such authoriuzed user")
+		return
+	}
 
+	projectId := c.Param("project_id")
+	collabId := c.Query("collaborator_id")
+
+	if collabId == "" {
+		newErrorResponse(c, http.StatusBadRequest, "You need to add query param \"collaborator_id\"")
+	}
+
+	project, err := a.repo.GetProjectById(projectId)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusBadRequest, "Invalid project ID")
+		return
+	}
+
+	if project.OwnerId.String() != userId {
+		newErrorResponse(c, http.StatusBadRequest, "You cannot modify projects that are not yours")
+		return
+	}
+
+	if a.repo.IsCollaborator(collabId, projectId) {
+		newErrorResponse(c, http.StatusBadRequest, "Collaboration is already exists")
+		return
+	}
+
+	err = a.repo.AddCollaborator(userId, projectId, collabId)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusInternalServerError, "Can't add collaborator")
+		return
+	}
+
+	users, err := a.repo.GetAllCollaborators(projectId)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusInternalServerError, "Can't get all collaborators")
+		return
+	}
+
+	c.JSON(http.StatusOK, users)
 }
 
 // DeleteCollaborator godoc
 // @Summary      Deletes collaborator
-// @Description  Removes a collaborator from the current project
+// @Description  Removes a collaborator from the current project and returns all collaborators of this project
 // @Tags         delete
 // @Produce      json
+// @Security BearerAuth
+// @Param collaborator_id query string true "Collaborator ID"
 // @Param project_id path string true "Project ID"
 // @Success 200 {object} []ds.Collaboration
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /project/{project_id}/collaborator [delete]
 func (a *Application) DeleteCollaborator(c *gin.Context) {
+	userId, err := a.GetUserIdByJWT(c)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusUnauthorized, "No such authoriuzed user")
+		return
+	}
 
+	projectId := c.Param("project_id")
+	collabId := c.Query("collaborator_id")
+
+	if collabId == "" {
+		newErrorResponse(c, http.StatusBadRequest, "You need to add query param \"collaborator_id\"")
+	}
+
+	project, err := a.repo.GetProjectById(projectId)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusBadRequest, "Invalid project ID")
+		return
+	}
+
+	if project.OwnerId.String() != userId {
+		newErrorResponse(c, http.StatusBadRequest, "You cannot modify projects that are not yours")
+		return
+	}
+
+	if !a.repo.IsCollaborator(collabId, projectId) {
+		newErrorResponse(c, http.StatusBadRequest, "Collaboration is not exists")
+		return
+	}
+
+	err = a.repo.DeleteCollaborator(userId, projectId, collabId)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusInternalServerError, "Can't add collaborator")
+		return
+	}
+
+	users, err := a.repo.GetAllCollaborators(projectId)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusInternalServerError, "Can't get all collaborators")
+		return
+	}
+
+	c.JSON(http.StatusOK, users)
 }

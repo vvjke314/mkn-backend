@@ -1,12 +1,21 @@
 package app
 
-import "github.com/gin-gonic/gin"
+import (
+	"encoding/json"
+	"mkn-backend/internal/pkg/ds"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
+)
 
 // UpdateSection godoc
 // @Summary      Updates section
 // @Description  Updates a section in the current project
 // @Tags         change
 // @Produce      json
+// @Security BearerAuth
+// @Param data body ds.UpdateSectionRequest true "Section information"
 // @Param section_id path string true "Section ID"
 // @Success 200 {object} []ds.Section
 // @Failure 403 {object} errorResponse
@@ -14,7 +23,63 @@ import "github.com/gin-gonic/gin"
 // @Failure 500 {object} errorResponse
 // @Router      /project/section/{section_id} [put]
 func (a *Application) UpdateSection(c *gin.Context) {
+	userId, err := a.GetUserIdByJWT(c)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusUnauthorized, "No such authoriuzed user")
+		return
+	}
 
+	log.Println(userId)
+	req := &ds.UpdateSectionRequest{}
+
+	err = json.NewDecoder(c.Request.Body).Decode(req)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusBadRequest, "Request body passed incorrectly")
+		return
+	}
+
+	log.Println(req)
+
+	sectionId := c.Param("section_id")
+
+	log.Println(sectionId)
+
+	if !a.repo.IsSectionOwner(userId, sectionId) {
+		newErrorResponse(c, http.StatusForbidden, "You cannot change a project that does not belong to you")
+		return
+	}
+
+	// section, err := a.repo.GetSectionById(sectionId)
+	// if err != nil {
+	// 	log.Println(err)
+	// 	newErrorResponse(c, http.StatusInternalServerError, "Can't get section")
+	// 	return
+	// }
+
+	// if req.Color != "" {
+	// 	section.Color = req.Color
+	// }
+	// if req.Title != "" {
+	// 	section.Title = req.Title
+	// }
+
+	// err = a.repo.UpdateSection(section)
+	// if err != nil {
+	// 	log.Println(err)
+	// 	newErrorResponse(c, http.StatusInternalServerError, "Can't update project")
+	// 	return
+	// }
+
+	// sections, err := a.repo.GetAllSections(section.ProjectId.String())
+	// if err != nil {
+	// 	log.Println(err)
+	// 	newErrorResponse(c, http.StatusInternalServerError, "Can't get all projects")
+	// 	return
+	// }
+
+	// c.JSON(http.StatusOK, sections)
 }
 
 // DeleteSection godoc
@@ -22,6 +87,7 @@ func (a *Application) UpdateSection(c *gin.Context) {
 // @Description  Deletes section from current project
 // @Tags         delete
 // @Produce      json
+// @Security BearerAuth
 // @Param section_id path string true "Section ID"
 // @Success 200 {object} []ds.Section
 // @Failure 403 {object} errorResponse
@@ -29,7 +95,42 @@ func (a *Application) UpdateSection(c *gin.Context) {
 // @Failure 500 {object} errorResponse
 // @Router      /project/section/{section_id} [delete]
 func (a *Application) DeleteSection(c *gin.Context) {
+	userId, err := a.GetUserIdByJWT(c)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusUnauthorized, "No such authoriuzed user")
+		return
+	}
 
+	sectionId := c.Param("section_id")
+
+	if !a.repo.IsSectionOwner(userId, sectionId) {
+		newErrorResponse(c, http.StatusForbidden, "You cannot change a project that does not belong to you")
+		return
+	}
+
+	section, err := a.repo.GetSectionById(sectionId)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusInternalServerError, "Can't get section")
+		return
+	}
+
+	err = a.repo.DeleteSection(section)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusInternalServerError, "Can't delete section")
+		return
+	}
+
+	sections, err := a.repo.GetAllSections(section.ProjectId.String())
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusInternalServerError, "Can't get all projects")
+		return
+	}
+
+	c.JSON(http.StatusOK, sections)
 }
 
 // CreateNotification godoc
