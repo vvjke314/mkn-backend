@@ -1,20 +1,80 @@
 package app
 
-import "github.com/gin-gonic/gin"
+import (
+	"encoding/json"
+	"mkn-backend/internal/pkg/ds"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
+)
 
 // UpdateNotification godoc
 // @Summary      Update notifications
 // @Description  Update information about a specific notification according to the entered parameters
 // @Tags         notification
 // @Produce      json
+// @Security BearerAuth
 // @Param notification_id path string true "Notification ID"
+// @Param data body ds.UpdateNotificationRequest true "Notification information"
 // @Success 200 {object} []ds.Notification
 // @Failure 403 {object} errorResponse
 // @Failure 404 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /project/section/notification/{notification_id} [put]
 func (a *Application) UpdateNotification(c *gin.Context) {
+	req := &ds.UpdateNotificationRequest{}
 
+	userId, err := a.GetUserIdByJWT(c)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusUnauthorized, "No such authoriuzed user")
+		return
+	}
+
+	notificationId := c.Param("notification_id")
+
+	notification, err := a.repo.GetNotificationById(notificationId)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusBadRequest, "Invalid notification ID")
+		return
+	}
+
+	if !a.repo.IsNotificationOwner(userId, notificationId) {
+		newErrorResponse(c, http.StatusForbidden, "You cannot change a project that does not belong to you")
+		return
+	}
+
+	err = json.NewDecoder(c.Request.Body).Decode(req)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusBadRequest, "Bad request body")
+		return
+	}
+
+	if req.Title != "" {
+		notification.Title = req.Title
+	}
+	if req.Description != "" {
+		notification.Description = req.Description
+	}
+
+	err = a.repo.UpdateNotification(notification)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusInternalServerError, "Can't change notification")
+		return
+	}
+
+	notifications, err := a.repo.GetAllNotifications(notification.SectionId.String())
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusInternalServerError, "Can't get all notifications")
+		return
+	}
+
+	c.JSON(http.StatusOK, notifications)
 }
 
 // DeleteNotification godoc
@@ -22,6 +82,7 @@ func (a *Application) UpdateNotification(c *gin.Context) {
 // @Description  Update information about a specific notification
 // @Tags         notification
 // @Produce      json
+// @Security BearerAuth
 // @Param notification_id path string true "Notification ID"
 // @Success 200 {object} []ds.Notification
 // @Failure 403 {object} errorResponse
@@ -29,7 +90,42 @@ func (a *Application) UpdateNotification(c *gin.Context) {
 // @Failure 500 {object} errorResponse
 // @Router      /project/section/notification/{notification_id} [delete]
 func (a *Application) DeleteNotification(c *gin.Context) {
+	userId, err := a.GetUserIdByJWT(c)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusUnauthorized, "No such authoriuzed user")
+		return
+	}
 
+	notificationId := c.Param("notification_id")
+
+	notification, err := a.repo.GetNotificationById(notificationId)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusBadRequest, "Invalid notification ID")
+		return
+	}
+
+	if !a.repo.IsNotificationOwner(userId, notificationId) {
+		newErrorResponse(c, http.StatusForbidden, "You cannot change a project that does not belong to you")
+		return
+	}
+
+	err = a.repo.DeleteNotification(notification)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusInternalServerError, "Can't delete notification")
+		return
+	}
+
+	notifications, err := a.repo.GetAllNotifications(notification.SectionId.String())
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusInternalServerError, "Can't get all notifications")
+		return
+	}
+
+	c.JSON(http.StatusOK, notifications)
 }
 
 // ResendNotification godoc
@@ -38,7 +134,7 @@ func (a *Application) DeleteNotification(c *gin.Context) {
 // @Tags         notification
 // @Produce      json
 // @Security BearerAuth
-// @Param data body ds.ResendNotificationRequest true "Section information"
+// @Param data body ds.ResendNotificationRequest true "Deadline info"
 // @Param notification_id path string true "Notification ID"
 // @Success 200 {object} []ds.Notification
 // @Failure 403 {object} errorResponse
@@ -46,5 +142,57 @@ func (a *Application) DeleteNotification(c *gin.Context) {
 // @Failure 500 {object} errorResponse
 // @Router      /project/section/notification/resend/{notification_id} [put]
 func (a *Application) ResendNotification(c *gin.Context) {
+	req := &ds.UpdateNotificationRequest{}
 
+	userId, err := a.GetUserIdByJWT(c)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusUnauthorized, "No such authoriuzed user")
+		return
+	}
+
+	notificationId := c.Param("notification_id")
+
+	notification, err := a.repo.GetNotificationById(notificationId)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusBadRequest, "Invalid notification ID")
+		return
+	}
+
+	if !a.repo.IsNotificationOwner(userId, notificationId) {
+		newErrorResponse(c, http.StatusForbidden, "You cannot change a project that does not belong to you")
+		return
+	}
+
+	err = json.NewDecoder(c.Request.Body).Decode(req)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusBadRequest, "Bad request body")
+		return
+	}
+
+	notification.Deadline = req.Deadline
+
+	if notification.Status == "undelivered" {
+		notification.Status = "scheduled"
+	}
+
+	err = a.repo.UpdateNotification(notification)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusInternalServerError, "Can't change notification")
+		return
+	}
+
+	notifications, err := a.repo.GetAllNotifications(notification.SectionId.String())
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusInternalServerError, "Can't get all notifications")
+		return
+	}
+
+	c.JSON(http.StatusOK, notifications)
 }
+
+// undelivered -> scheduled

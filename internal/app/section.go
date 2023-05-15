@@ -183,7 +183,7 @@ func (a *Application) CreateNotification(c *gin.Context) {
 		Title:       req.Title,
 		Description: req.Description,
 		Deadline:    req.Deadline,
-		Status:      req.Status,
+		Status:      "scheduled",
 		ErrorStatus: 0,
 	}
 
@@ -208,6 +208,7 @@ func (a *Application) CreateNotification(c *gin.Context) {
 // @Summary      Gets All Notifications
 // @Description  Returns all notifications in the current section
 // @Tags         notification
+// @Security BearerAuth
 // @Produce      json
 // @Param section_id path string true "Section ID"
 // @Success      200 {object} []ds.Notification
@@ -244,6 +245,7 @@ func (a *Application) GetAllNotifications(c *gin.Context) {
 // @Summary      Gets Notification
 // @Description  Returns Notification by ID
 // @Tags         notification
+// @Security BearerAuth
 // @Produce      json
 // @Param notification_id path string true "Notification ID"
 // @Success      200 {object} ds.Notification
@@ -261,7 +263,7 @@ func (a *Application) GetNotification(c *gin.Context) {
 
 	notificationId := c.Param("notification_id")
 
-	if !a.repo.IsSectionOwner(userId, sectionId) {
+	if !a.repo.IsNotificationOwner(userId, notificationId) {
 		newErrorResponse(c, http.StatusForbidden, "You cannot change a project that does not belong to you")
 		return
 	}

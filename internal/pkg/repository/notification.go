@@ -7,6 +7,15 @@ import (
 	"github.com/pkg/errors"
 )
 
+func (r *Repository) UpdateNotification(notification ds.Notification) error {
+	err := r.db.Model(&ds.Notification{}).Where("id = ?", notification.Id.String()).Updates(notification).Error
+	if err != nil {
+		return errors.Wrap(err, "Can't update section in repo")
+	}
+
+	return nil
+}
+
 func (r *Repository) DeleteNotification(notification ds.Notification) error {
 	err := r.db.Delete(&notification).Error
 	if err != nil {

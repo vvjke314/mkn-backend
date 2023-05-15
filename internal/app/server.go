@@ -63,10 +63,10 @@ func (a *Application) StartServer() {
 		authorized.GET("/project/section/notification/:notification_id", a.GetNotification) //+
 
 		//notification
-		authorized.PUT("/project/section/notification/:notification_id", a.UpdateNotification)        //-
+		authorized.PUT("/project/section/notification/:notification_id", a.UpdateNotification)        //+
 		authorized.DELETE("/project/section/notification/:notification_id", a.DeleteNotification)     //+
 		authorized.POST("/project/section/:section_id/notification", a.CreateNotification)            //+
-		authorized.PUT("/project/section/notification/resend/:notification_id", a.ResendNotification) //-
+		authorized.PUT("/project/section/notification/resend/:notification_id", a.ResendNotification) //+
 
 		//moderator
 		authorized.GET("/undelivered_notifications", a.GetUndeliviredNotifications) //-

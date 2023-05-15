@@ -134,3 +134,14 @@ func (r *Repository) IsFavorite(userId, projectId string) bool {
 
 	return true
 }
+
+// ///???????????
+func (r *Repository) GetUpcomingNotifications(userId string) (ds.Notification, error) {
+	projects := []ds.Project{}
+	r.db.Where("owner_id = ?", userId).Find(&projects)
+
+	sections := [][]ds.Section{}
+	for i := range projects {
+		r.db.Where("project_id = ?", projects[i].Id).Find(&sections[i])
+	}
+}

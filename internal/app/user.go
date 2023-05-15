@@ -67,13 +67,35 @@ func (a *Application) CreateProject(c *gin.Context) {
 // @Summary      Gets upcoming notifications
 // @Description  Returns upcoming notifications
 // @Tags         notification
+// @Security BearerAuth
 // @Produce      json
 // @Success      200 {object} []ds.Notification
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /upcoming [get]
 func (a *Application) GetUpcomingNotifications(c *gin.Context) {
+	userId, err := a.GetUserIdByJWT(c)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusUnauthorized, "No such authoriuzed user")
+		return
+	}
 
+	sectionId := c.Param("section_id")
+
+	if !a.repo.IsSectionOwner(userId, sectionId) {
+		newErrorResponse(c, http.StatusForbidden, "You cannot change a project that does not belong to you")
+		return
+	}
+
+	notifications, err := a.repo.GetUpcomingNotifications(userId)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusInternalServerError, "Can't get all notifications")
+		return
+	}
+
+	c.JSON(http.StatusOK, notifications)
 }
 
 // GetFavoriteProjects godoc

@@ -33,6 +33,12 @@ type ResendNotificationRequest struct {
 }
 
 type CreateNotificationRequest struct {
+	Title       string    `json:"title" binding:"required"`
+	Description string    `json:"description" binding:"required"`
+	Deadline    time.Time `json:"deadline" binding:"required"`
+}
+
+type UpdateNotificationRequest struct {
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
 	Deadline    time.Time `json:"deadline"`
