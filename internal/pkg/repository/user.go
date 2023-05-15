@@ -117,9 +117,9 @@ func (r *Repository) ChangeEmail(userId, newEmail string) error {
 	return nil
 }
 
-func (r *Repository) LastThreeProjects(userId string) ([]ds.Project, error) {
+func (r *Repository) LastSixProjects(userId string) ([]ds.Project, error) {
 	projects := []ds.Project{}
-	err := r.db.Order("last_edited desc").Where("owner_id = ?", userId).Limit(3).Find(&projects).Error
+	err := r.db.Order("last_edited desc").Where("owner_id = ?", userId).Limit(6).Find(&projects).Error
 	if err != nil {
 		return []ds.Project{}, errors.Wrap(err, "Can't get projects from repo")
 	}

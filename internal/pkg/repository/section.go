@@ -56,3 +56,32 @@ func (r *Repository) DeleteSection(section ds.Section) error {
 
 	return nil
 }
+
+func (r *Repository) CreateNotification(notification ds.Notification) error {
+	err := r.db.Create(&notification).Error
+	if err != nil {
+		return errors.Wrap(err, "Can't create notification in repo")
+	}
+
+	return nil
+}
+
+func (r *Repository) GetAllNotifications(sectionId string) ([]ds.Notification, error) {
+	notifications := []ds.Notification{}
+	err := r.db.Where("section_id = ?", sectionId).Find(&notifications).Error
+	if err != nil {
+		return nil, errors.Wrap(err, "Can't find such notification")
+	}
+
+	return notifications, nil
+}
+
+func (r *Repository) GetNotification(notificationId string) ([]ds.Notification, error) {
+	notifications := []ds.Notification{}
+	err := r.db.Where("id = ?", notificationId).Find(&notifications).Error
+	if err != nil {
+		return nil, errors.Wrap(err, "Can't find such notification")
+	}
+
+	return notifications, nil
+}

@@ -14,7 +14,7 @@ import (
 // UpdateProject godoc
 // @Summary      Update project
 // @Description  Updates a specific project according to the entered parameters and returns all owned projects
-// @Tags         change
+// @Tags         project
 // @Produce      json
 // @Success 200 {object} []ds.Project
 // @Security BearerAuth
@@ -87,7 +87,7 @@ func (a *Application) UpdateProject(c *gin.Context) {
 // DeleteProject godoc
 // @Summary      Deletes project
 // @Description  Deletes a specific project and returns all owned projects
-// @Tags         delete
+// @Tags         project
 // @Produce      json
 // @Param project_id path string true "Project ID"
 // @Security BearerAuth
@@ -138,7 +138,7 @@ func (a *Application) DeleteProject(c *gin.Context) {
 // CreateSection godoc
 // @Summary      Creates section
 // @Description  Creates a section in the project
-// @Tags         add
+// @Tags         section
 // @Produce      json
 // @Security BearerAuth
 // @Param project_id path string true "Project ID"
@@ -205,7 +205,7 @@ func (a *Application) CreateSection(c *gin.Context) {
 // GetCollaborators godoc
 // @Summary      Returns collaborators
 // @Description  Returns all collaborators of the project
-// @Tags         info
+// @Tags         collaborations
 // @Produce      json
 // @Security BearerAuth
 // @Param project_id path string true "Project ID"
@@ -248,7 +248,7 @@ func (a *Application) GetCollaborators(c *gin.Context) {
 // GetAllSections godoc
 // @Summary      Returns all sections
 // @Description  Returns all sections of the current project
-// @Tags         info
+// @Tags         section
 // @Produce      json
 // @Param project_id path string true "Project ID"
 // @Security BearerAuth
@@ -291,7 +291,7 @@ func (a *Application) GetAllSections(c *gin.Context) {
 // AddCollaborator godoc
 // @Summary      Adds collaborators
 // @Description  Adds a collaborator to the current project and returns all collaborators of this project
-// @Tags         add
+// @Tags         collaborations
 // @Produce      json
 // @Security BearerAuth
 // @Param collaborator_id query string true "Collaborator ID"
@@ -352,7 +352,7 @@ func (a *Application) AddCollaborator(c *gin.Context) {
 // DeleteCollaborator godoc
 // @Summary      Deletes collaborator
 // @Description  Removes a collaborator from the current project and returns all collaborators of this project
-// @Tags         delete
+// @Tags         collaborations
 // @Produce      json
 // @Security BearerAuth
 // @Param collaborator_id query string true "Collaborator ID"

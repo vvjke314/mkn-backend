@@ -1,5 +1,7 @@
 package ds
 
+import "time"
+
 type ChangeEmailRequest struct {
 	Email string `json:"email" binding:"required"`
 }
@@ -28,4 +30,11 @@ type UpdateSectionRequest struct {
 
 type ResendNotificationRequest struct {
 	Deadline string `json:"deadline"`
+}
+
+type CreateNotificationRequest struct {
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	Deadline    time.Time `json:"deadline"`
+	Status      string    `json:"status"`
 }

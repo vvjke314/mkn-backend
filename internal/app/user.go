@@ -14,7 +14,7 @@ import (
 // CreateProject godoc
 // @Summary      Creates project
 // @Description  Creates project
-// @Tags         add
+// @Tags         project
 // @Produce      json
 // @Param data body ds.CreateProjectRequest true "Project data"
 // @Security BearerAuth
@@ -66,7 +66,7 @@ func (a *Application) CreateProject(c *gin.Context) {
 // GetUpcomingNotifications godoc
 // @Summary      Gets upcoming notifications
 // @Description  Returns upcoming notifications
-// @Tags         info
+// @Tags         notification
 // @Produce      json
 // @Success      200 {object} []ds.Notification
 // @Failure 403 {object} errorResponse
@@ -79,7 +79,7 @@ func (a *Application) GetUpcomingNotifications(c *gin.Context) {
 // GetFavoriteProjects godoc
 // @Summary      Gets favorite projects
 // @Description  Returns favorite projects
-// @Tags         info
+// @Tags         favorite_project
 // @Produce      json
 // @Security BearerAuth
 // @Success      200 {object} []ds.Project
@@ -118,7 +118,7 @@ func (a *Application) GetFavoriteProjects(c *gin.Context) {
 // GetFavoriteProject godoc
 // @Summary      Gets favorite projects
 // @Description  Returns favorite projects
-// @Tags         info
+// @Tags         favorite_project
 // @Produce      json
 // @Security BearerAuth
 // @Param project_id path string true "Project ID"
@@ -156,7 +156,7 @@ func (a *Application) GetFavoriteProject(c *gin.Context) {
 // GetAllProjects godoc
 // @Summary      Gets all projects
 // @Description  Returns all projects
-// @Tags         info
+// @Tags         project
 // @Produce      json
 // @Success      200 {object} []ds.Project
 // @Failure 403 {object} errorResponse
@@ -176,7 +176,7 @@ func (a *Application) GetAllProjects(c *gin.Context) {
 // GetAllOwnedProjects godoc
 // @Summary      Gets all owned project
 // @Description  Gets all owned project
-// @Tags         info
+// @Tags         project
 // @Produce      json
 // @Security BearerAuth
 // @Success      200 {object} []ds.Project
@@ -204,7 +204,7 @@ func (a *Application) GetAllOwnedProjects(c *gin.Context) {
 // AddFavorite godoc
 // @Summary      Add favorite project
 // @Description  Add favorite project
-// @Tags         add
+// @Tags         favorite_project
 // @Produce      json
 // @Param project_id query string true "Project ID"
 // @Security BearerAuth
@@ -247,7 +247,7 @@ func (a *Application) AddFavorite(c *gin.Context) {
 // DeleteFavorite godoc
 // @Summary      Delete favorite project
 // @Description  Delete favorite user project
-// @Tags         delete
+// @Tags         favorite_project
 // @Produce      json
 // @Param project_id path string true "Project ID"
 // @Security BearerAuth
@@ -284,7 +284,7 @@ func (a *Application) DeleteFavorite(c *gin.Context) {
 // ChangeEmail godoc
 // @Summary      Changes user email
 // @Description  Changes user email
-// @Tags         change
+// @Tags         user
 // @Produce      json
 // @Param data body ds.ChangeEmailRequest true "New user email"
 // @Security BearerAuth
@@ -325,17 +325,17 @@ func (a *Application) ChangeEmail(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
-// LastThreeProjects godoc
-// @Summary      Returns last 3 projects
-// @Description  Returns the last three projects by last edit time
-// @Tags         info
+// LastSixProjects godoc
+// @Summary      Returns last 6 projects
+// @Description  Returns the last six projects by last edit time
+// @Tags         project
 // @Produce      json
 // @Security BearerAuth
 // @Success      200 {object} []ds.Project
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /projects/latest [get]
-func (a *Application) LastThreeProjects(c *gin.Context) {
+func (a *Application) LastSixProjects(c *gin.Context) {
 	userId, err := a.GetUserIdByJWT(c)
 	if err != nil {
 		log.Println(err)
@@ -343,7 +343,7 @@ func (a *Application) LastThreeProjects(c *gin.Context) {
 		return
 	}
 
-	projects, err := a.repo.LastThreeProjects(userId)
+	projects, err := a.repo.LastSixProjects(userId)
 	if err != nil {
 		log.Println(err)
 		newErrorResponse(c, http.StatusInternalServerError, "")
@@ -351,21 +351,4 @@ func (a *Application) LastThreeProjects(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, projects)
-}
-
-// ResendNotification godoc
-// @Summary      Resend notification
-// @Description  Resend notification
-// @Tags         change
-// @Produce      json
-// @Security BearerAuth
-// @Param data body ds.ResendNotificationRequest true "Section information"
-// @Param notification_id path string true "Notification ID"
-// @Success 200 {object} []ds.Notification
-// @Failure 403 {object} errorResponse
-// @Failure 404 {object} errorResponse
-// @Failure 500 {object} errorResponse
-// @Router      /project/section/notification/resend/{notification_id} [put]
-func (a *Application) ResendNotification(c *gin.Context) {
-
 }

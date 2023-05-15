@@ -6,13 +6,14 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 )
 
 // UpdateSection godoc
 // @Summary      Updates section
 // @Description  Updates a section in the current project
-// @Tags         change
+// @Tags         section
 // @Produce      json
 // @Security BearerAuth
 // @Param data body ds.UpdateSectionRequest true "Section information"
@@ -85,7 +86,7 @@ func (a *Application) UpdateSection(c *gin.Context) {
 // DeleteSection godoc
 // @Summary      Deletes section
 // @Description  Deletes section from current project
-// @Tags         delete
+// @Tags         section
 // @Produce      json
 // @Security BearerAuth
 // @Param section_id path string true "Section ID"
@@ -136,21 +137,77 @@ func (a *Application) DeleteSection(c *gin.Context) {
 // CreateNotification godoc
 // @Summary      Creates notification
 // @Description  Creates notification in accordance with the entered parameters
-// @Tags         add
+// @Tags         notification
 // @Produce      json
+// @Security BearerAuth
 // @Param section_id path string true "Section ID"
+// @Param data body ds.CreateNotificationRequest true "Notification information"
 // @Success 200 {object} []ds.Notification
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /project/section/{section_id}/notification [post]
 func (a *Application) CreateNotification(c *gin.Context) {
+	req := &ds.CreateNotificationRequest{}
 
+	userId, err := a.GetUserIdByJWT(c)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusUnauthorized, "No such authoriuzed user")
+		return
+	}
+
+	sectionId := c.Param("section_id")
+
+	section, err := a.repo.GetSectionById(sectionId)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusBadRequest, "Invalid section ID")
+		return
+	}
+
+	if !a.repo.IsSectionOwner(userId, sectionId) {
+		newErrorResponse(c, http.StatusForbidden, "You cannot change a project that does not belong to you")
+		return
+	}
+
+	err = json.NewDecoder(c.Request.Body).Decode(req)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusBadRequest, "Bad request body")
+		return
+	}
+
+	notification := &ds.Notification{
+		Id:          uuid.New(),
+		SectionId:   section.Id,
+		Title:       req.Title,
+		Description: req.Description,
+		Deadline:    req.Deadline,
+		Status:      req.Status,
+		ErrorStatus: 0,
+	}
+
+	err = a.repo.CreateNotification(*notification)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusInternalServerError, "Can't create notification")
+		return
+	}
+
+	notifications, err := a.repo.GetAllNotifications(sectionId)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusInternalServerError, "Can't get all notifications")
+		return
+	}
+
+	c.JSON(http.StatusOK, notifications)
 }
 
 // GetAllNotifications godoc
 // @Summary      Gets All Notifications
 // @Description  Returns all notifications in the current section
-// @Tags         info
+// @Tags         notification
 // @Produce      json
 // @Param section_id path string true "Section ID"
 // @Success      200 {object} []ds.Notification
@@ -158,13 +215,35 @@ func (a *Application) CreateNotification(c *gin.Context) {
 // @Failure 500 {object} errorResponse
 // @Router      /project/section/{section_id}/notifications [get]
 func (a *Application) GetAllNotifications(c *gin.Context) {
+	userId, err := a.GetUserIdByJWT(c)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusUnauthorized, "No such authoriuzed user")
+		return
+	}
+
+	sectionId := c.Param("section_id")
+
+	if !a.repo.IsSectionOwner(userId, sectionId) {
+		newErrorResponse(c, http.StatusForbidden, "You cannot change a project that does not belong to you")
+		return
+	}
+
+	notifications, err := a.repo.GetAllNotifications(sectionId)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusInternalServerError, "Can't get all notifications")
+		return
+	}
+
+	c.JSON(http.StatusOK, notifications)
 
 }
 
 // GetNotification godoc
 // @Summary      Gets Notification
 // @Description  Returns Notification by ID
-// @Tags         info
+// @Tags         notification
 // @Produce      json
 // @Param notification_id path string true "Notification ID"
 // @Success      200 {object} ds.Notification
@@ -173,5 +252,26 @@ func (a *Application) GetAllNotifications(c *gin.Context) {
 // @Failure 500 {object} errorResponse
 // @Router      /project/section/notification/{notification_id} [get]
 func (a *Application) GetNotification(c *gin.Context) {
+	userId, err := a.GetUserIdByJWT(c)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusUnauthorized, "No such authoriuzed user")
+		return
+	}
 
+	notificationId := c.Param("notification_id")
+
+	if !a.repo.IsSectionOwner(userId, sectionId) {
+		newErrorResponse(c, http.StatusForbidden, "You cannot change a project that does not belong to you")
+		return
+	}
+
+	notifications, err := a.repo.GetNotification(notificationId)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusInternalServerError, "Can't get all notifications")
+		return
+	}
+
+	c.JSON(http.StatusOK, notifications)
 }
