@@ -27,5 +27,5 @@ type UpdateSectionRequest struct {
 }
 
 type ResendNotificationRequest struct {
-	Deadline string `json:"title"`
+	Deadline string `json:"deadline"`
 }

@@ -51,35 +51,35 @@ func (a *Application) UpdateSection(c *gin.Context) {
 		return
 	}
 
-	// section, err := a.repo.GetSectionById(sectionId)
-	// if err != nil {
-	// 	log.Println(err)
-	// 	newErrorResponse(c, http.StatusInternalServerError, "Can't get section")
-	// 	return
-	// }
+	section, err := a.repo.GetSectionById(sectionId)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusInternalServerError, "Can't get section")
+		return
+	}
 
-	// if req.Color != "" {
-	// 	section.Color = req.Color
-	// }
-	// if req.Title != "" {
-	// 	section.Title = req.Title
-	// }
+	if req.Color != "" {
+		section.Color = req.Color
+	}
+	if req.Title != "" {
+		section.Title = req.Title
+	}
 
-	// err = a.repo.UpdateSection(section)
-	// if err != nil {
-	// 	log.Println(err)
-	// 	newErrorResponse(c, http.StatusInternalServerError, "Can't update project")
-	// 	return
-	// }
+	err = a.repo.UpdateSection(section)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusInternalServerError, "Can't update project")
+		return
+	}
 
-	// sections, err := a.repo.GetAllSections(section.ProjectId.String())
-	// if err != nil {
-	// 	log.Println(err)
-	// 	newErrorResponse(c, http.StatusInternalServerError, "Can't get all projects")
-	// 	return
-	// }
+	sections, err := a.repo.GetAllSections(section.ProjectId.String())
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusInternalServerError, "Can't get all projects")
+		return
+	}
 
-	// c.JSON(http.StatusOK, sections)
+	c.JSON(http.StatusOK, sections)
 }
 
 // DeleteSection godoc

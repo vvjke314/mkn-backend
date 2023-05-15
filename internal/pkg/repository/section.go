@@ -9,7 +9,7 @@ import (
 
 func (r *Repository) GetSectionById(sectionId string) (ds.Section, error) {
 	section := ds.Section{}
-	err := r.db.Where("id = ?", sectionId).First(section).Error
+	err := r.db.Where("id = ?", sectionId).First(&section).Error
 	if err != nil {
 		return ds.Section{}, errors.Wrap(err, "Can't find such section in repo")
 	}

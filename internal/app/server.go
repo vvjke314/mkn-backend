@@ -56,9 +56,9 @@ func (a *Application) StartServer() {
 		authorized.DELETE("/project/:project_id/collaborator", a.DeleteCollaborator) //+
 
 		//section
-		authorized.PUT("/project/section/:section_id", a.UpdateSection)
-		authorized.DELETE("/project/section/:section_id", a.DeleteSection)
-		authorized.POST("/project/:project_id/section", a.CreateSection) //+
+		authorized.PUT("/project/section/:section_id", a.UpdateSection)    //+
+		authorized.DELETE("/project/section/:section_id", a.DeleteSection) //+
+		authorized.POST("/project/:project_id/section", a.CreateSection)   //+
 		authorized.GET("/project/section/:section_id/notifications", a.GetAllNotifications)
 		authorized.GET("/project/section/notification/:notification_id", a.GetNotification)
 
