@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"mkn-backend/internal/pkg/ds"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
@@ -58,6 +59,9 @@ func (a *Application) UpdateNotification(c *gin.Context) {
 	}
 	if req.Description != "" {
 		notification.Description = req.Description
+	}
+	if req.DeadLine != "" {
+		notification.Deadline, _ = time.Parse("2006-01-02T15:04:05Z07:00", req.DeadLine)
 	}
 
 	err = a.repo.UpdateNotification(notification)
@@ -142,7 +146,7 @@ func (a *Application) DeleteNotification(c *gin.Context) {
 // @Failure 500 {object} errorResponse
 // @Router      /project/section/notification/resend/{notification_id} [put]
 func (a *Application) ResendNotification(c *gin.Context) {
-	req := &ds.UpdateNotificationRequest{}
+	req := &ds.ResendNotificationRequest{}
 
 	userId, err := a.GetUserIdByJWT(c)
 	if err != nil {
@@ -172,7 +176,9 @@ func (a *Application) ResendNotification(c *gin.Context) {
 		return
 	}
 
-	notification.Deadline = req.Deadline
+	if req.Deadline != "" {
+		notification.Deadline, _ = time.Parse("2006-01-02T15:04:05Z07:00", req.Deadline)
+	}
 
 	if notification.Status == "undelivered" {
 		notification.Status = "scheduled"

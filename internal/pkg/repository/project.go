@@ -16,19 +16,18 @@ func (r *Repository) UpdateProject(userId, projectId string, project ds.Project)
 	return nil
 }
 
-// !!!!!!!!!!!!!!!!!!!!!!
 func (r *Repository) DeleteProject(projectId string) error {
 	project := &ds.Project{}
 	favProjects := &ds.FavoriteProject{}
 	collabs := &ds.Collaboration{}
 	sections := &ds.Section{}
 
-	err := r.db.Where("project_id = ?", projectId).Delete(&collabs).Error
+	err := r.db.Where("project_id = ?", projectId).Delete(&sections).Error
 	if err != nil {
 		return errors.Wrap(err, "Can't delete this project")
 	}
 
-	err = r.db.Where("project_id = ?", projectId).Delete(&sections).Error
+	err = r.db.Where("project_id = ?", projectId).Delete(&collabs).Error
 	if err != nil {
 		return errors.Wrap(err, "Can't delete this project")
 	}

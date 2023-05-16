@@ -39,8 +39,8 @@ type CreateNotificationRequest struct {
 }
 
 type UpdateNotificationRequest struct {
-	Title       string    `json:"title"`
-	Description string    `json:"description"`
-	Deadline    time.Time `json:"deadline"`
-	Status      string    `json:"status"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	Status      string `json:"status"`
+	DeadLine    string `json:"deadline"`
 }
