@@ -37,15 +37,14 @@ func (a *Application) StartServer() {
 	authorized.Use(a.UserIdentity)
 	{
 		//user
-		authorized.POST("/project", a.CreateProject)                  //+
-		authorized.GET("/upcoming", a.GetUpcomingNotifications)       //-
-		authorized.GET("/favorites", a.GetFavoriteProjects)           //+
-		authorized.POST("/favorite", a.AddFavorite)                   //+
-		authorized.GET("/favorite/:project_id", a.GetFavoriteProject) //+
-		authorized.DELETE("/favorite/:project_id", a.DeleteFavorite)  //+
-		authorized.GET("/projects/owned", a.GetAllOwnedProjects)      //+
-		authorized.PUT("/email", a.ChangeEmail)                       //+
-		authorized.GET("/projects/latest", a.LastSixProjects)         //+
+		authorized.POST("/project", a.CreateProject)                 //+
+		authorized.GET("/upcoming", a.GetUpcomingNotifications)      //-
+		authorized.GET("/favorites", a.GetFavoriteProjects)          //+
+		authorized.POST("/favorite", a.AddFavorite)                  //+
+		authorized.DELETE("/favorite/:project_id", a.DeleteFavorite) //+
+		authorized.GET("/projects/owned", a.GetAllOwnedProjects)     //+
+		authorized.PUT("/email", a.ChangeEmail)                      //+
+		authorized.GET("/projects/latest", a.LastSixProjects)        //+
 
 		//project
 		authorized.PUT("/project/:project_id", a.UpdateProject)                      //+

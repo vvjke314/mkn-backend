@@ -110,50 +110,6 @@
             }
         },
         "/favorite/{project_id}": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Returns favorite projects",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "favorite_project"
-                ],
-                "summary": "Gets favorite projects",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Project ID",
-                        "name": "project_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/ds.Project"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "$ref": "#/definitions/app.errorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/app.errorResponse"
-                        }
-                    }
-                }
-            },
             "delete": {
                 "security": [
                     {

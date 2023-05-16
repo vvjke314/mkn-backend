@@ -135,10 +135,43 @@ func (r *Repository) IsFavorite(userId, projectId string) bool {
 	return true
 }
 
-// ///???????????
 func (r *Repository) GetUpcomingNotifications(userId string) ([]ds.Notification, error) {
-	projects := []ds.Project{}
-	r.db.Where("owner_id = ?", userId).Find(&projects)
+	ownProjects := []ds.Project{}
+	r.db.Where("owner_id = ?", userId).Find(&ownProjects)
 
-	return ds.Notification{}, nil
+	collabs := []ds.Collaboration{}
+	r.db.Where("user_id = ?", userId).Find(&collabs)
+
+	for i := range collabs {
+		proj, err := r.GetProjectById(collabs[i].ProjectId.String())
+		if err != nil {
+			return nil, err
+		}
+
+		ownProjects = append(ownProjects, proj)
+	}
+
+	sections := []ds.Section{}
+	for i := range ownProjects {
+		secTmp := []ds.Section{}
+
+		err := r.db.Where("project_id = ?", ownProjects[i].Id.String()).Find(&secTmp).Error
+		if err != nil {
+			return nil, err
+		}
+		sections = append(sections, secTmp...)
+	}
+
+	notifications := []ds.Notification{}
+	for i := range sections {
+		notTmp := []ds.Notification{}
+
+		err := r.db.Where("section_id = ?", sections[i].Id.String()).Find(&notTmp).Error
+		if err != nil {
+			return nil, err
+		}
+		notifications = append(notifications, notTmp...)
+	}
+
+	return notifications, nil
 }

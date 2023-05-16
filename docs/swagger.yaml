@@ -282,34 +282,6 @@ paths:
       summary: Delete favorite project
       tags:
       - favorite_project
-    get:
-      description: Returns favorite projects
-      parameters:
-      - description: Project ID
-        in: path
-        name: project_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/ds.Project'
-        "403":
-          description: Forbidden
-          schema:
-            $ref: '#/definitions/app.errorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/app.errorResponse'
-      security:
-      - BearerAuth: []
-      summary: Gets favorite projects
-      tags:
-      - favorite_project
   /favorites:
     get:
       description: Returns favorite projects

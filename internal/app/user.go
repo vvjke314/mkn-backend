@@ -81,13 +81,6 @@ func (a *Application) GetUpcomingNotifications(c *gin.Context) {
 		return
 	}
 
-	sectionId := c.Param("section_id")
-
-	if !a.repo.IsSectionOwner(userId, sectionId) {
-		newErrorResponse(c, http.StatusForbidden, "You cannot change a project that does not belong to you")
-		return
-	}
-
 	notifications, err := a.repo.GetUpcomingNotifications(userId)
 	if err != nil {
 		log.Println(err)
@@ -137,43 +130,32 @@ func (a *Application) GetFavoriteProjects(c *gin.Context) {
 	c.JSON(http.StatusOK, projects)
 }
 
-// GetFavoriteProject godoc
-// @Summary      Gets favorite projects
-// @Description  Returns favorite projects
-// @Tags         favorite_project
-// @Produce      json
-// @Security BearerAuth
-// @Param project_id path string true "Project ID"
-// @Success      200 {object} ds.Project
-// @Failure 403 {object} errorResponse
-// @Failure 500 {object} errorResponse
-// @Router      /favorite/{project_id} [get]
-func (a *Application) GetFavoriteProject(c *gin.Context) {
-	userId, err := a.GetUserIdByJWT(c)
-	if err != nil {
-		log.Println(err)
-		newErrorResponse(c, http.StatusUnauthorized, "No such authoriuzed user")
-		return
-	}
+// func (a *Application) GetFavoriteProject(c *gin.Context) {
+// 	userId, err := a.GetUserIdByJWT(c)
+// 	if err != nil {
+// 		log.Println(err)
+// 		newErrorResponse(c, http.StatusUnauthorized, "No such authoriuzed user")
+// 		return
+// 	}
 
-	projectId := c.Param("project_id")
+// 	projectId := c.Param("project_id")
 
-	favProject, err := a.repo.GetFavoriteProject(userId, projectId)
-	if err != nil {
-		log.Println(err)
-		newErrorResponse(c, http.StatusBadRequest, "This user does not have this favorite project added")
-		return
-	}
+// 	favProject, err := a.repo.GetFavoriteProject(userId, projectId)
+// 	if err != nil {
+// 		log.Println(err)
+// 		newErrorResponse(c, http.StatusBadRequest, "This user does not have this favorite project added")
+// 		return
+// 	}
 
-	project, err := a.repo.GetProjectById(favProject.ProjectId.String())
-	if err != nil {
-		log.Println(err)
-		newErrorResponse(c, http.StatusInternalServerError, "Can't get favorite project")
-		return
-	}
+// 	project, err := a.repo.GetProjectById(favProject.ProjectId.String())
+// 	if err != nil {
+// 		log.Println(err)
+// 		newErrorResponse(c, http.StatusInternalServerError, "Can't get favorite project")
+// 		return
+// 	}
 
-	c.JSON(http.StatusOK, project)
-}
+// 	c.JSON(http.StatusOK, project)
+// }
 
 // GetAllProjects godoc
 // @Summary      Gets all projects
