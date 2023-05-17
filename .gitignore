@@ -2,4 +2,3 @@
 bin
 go.mod
 go.sum
-config.toml

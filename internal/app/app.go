@@ -21,12 +21,14 @@ type Application struct {
 func New(ctx context.Context) (*Application, error) {
 	cfg, err := config.NewConfig(ctx)
 	if err != nil {
+		log.Println(err)
 		return nil, err
 	}
 
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", cfg.DataBase.Host, cfg.DataBase.User, cfg.DataBase.Password, cfg.DataBase.Name, cfg.DataBase.Port)
 	repo, err := repository.New(dsn)
 	if err != nil {
+		log.Println(err)
 		return nil, err
 	}
 

@@ -4,7 +4,7 @@
 // - protoc             v3.12.4
 // source: mail-service.proto
 
-package __
+package grpcApi
 
 import (
 	context "context"
@@ -58,15 +58,14 @@ func (c *mailingServiceClient) CancelNotification(ctx context.Context, in *Cance
 }
 
 // MailingServiceServer is the server API for MailingService service.
-// All implementations must embed UnimplementedMailingServiceServer
+// All implementations should embed UnimplementedMailingServiceServer
 // for forward compatibility
 type MailingServiceServer interface {
 	ScheduleNotification(context.Context, *ScheduleRequest) (*ScheduleResponse, error)
 	CancelNotification(context.Context, *CancelNotificationRequest) (*CancelNotificationResponse, error)
-	mustEmbedUnimplementedMailingServiceServer()
 }
 
-// UnimplementedMailingServiceServer must be embedded to have forward compatible implementations.
+// UnimplementedMailingServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedMailingServiceServer struct {
 }
 
@@ -76,7 +75,6 @@ func (UnimplementedMailingServiceServer) ScheduleNotification(context.Context, *
 func (UnimplementedMailingServiceServer) CancelNotification(context.Context, *CancelNotificationRequest) (*CancelNotificationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CancelNotification not implemented")
 }
-func (UnimplementedMailingServiceServer) mustEmbedUnimplementedMailingServiceServer() {}
 
 // UnsafeMailingServiceServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to MailingServiceServer will
@@ -185,15 +183,14 @@ func (c *backendServiceClient) UpdateNotificationStatus(ctx context.Context, in 
 }
 
 // BackendServiceServer is the server API for BackendService service.
-// All implementations must embed UnimplementedBackendServiceServer
+// All implementations should embed UnimplementedBackendServiceServer
 // for forward compatibility
 type BackendServiceServer interface {
 	GetFullNotificationInfo(context.Context, *NotificationInfoRequest) (*NotificationInfoResponse, error)
 	UpdateNotificationStatus(context.Context, *UpdateNotificationStatusRequest) (*UpdateNotificationStatusResponse, error)
-	mustEmbedUnimplementedBackendServiceServer()
 }
 
-// UnimplementedBackendServiceServer must be embedded to have forward compatible implementations.
+// UnimplementedBackendServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedBackendServiceServer struct {
 }
 
@@ -203,7 +200,6 @@ func (UnimplementedBackendServiceServer) GetFullNotificationInfo(context.Context
 func (UnimplementedBackendServiceServer) UpdateNotificationStatus(context.Context, *UpdateNotificationStatusRequest) (*UpdateNotificationStatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateNotificationStatus not implemented")
 }
-func (UnimplementedBackendServiceServer) mustEmbedUnimplementedBackendServiceServer() {}
 
 // UnsafeBackendServiceServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to BackendServiceServer will
