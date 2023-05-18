@@ -16,33 +16,42 @@ func (r *Repository) UpdateProject(userId, projectId string, project ds.Project)
 	return nil
 }
 
-func (r *Repository) DeleteProject(projectId string) error {
+func (r *Repository) DeleteProject(projectId string) ([]ds.Notification, error) {
 	project := &ds.Project{}
 	favProjects := &ds.FavoriteProject{}
 	collabs := &ds.Collaboration{}
-	sections := &ds.Section{}
+	sections := []ds.Section{}
+	notifications := []ds.Notification{}
 
-	err := r.db.Where("project_id = ?", projectId).Delete(&sections).Error
+	err := r.db.Where("project_id = ?", projectId).Find(&sections).Error
 	if err != nil {
-		return errors.Wrap(err, "Can't delete this project")
+		return nil, errors.Wrap(err, "Can't delete this project")
+	}
+
+	for i := range sections {
+		tmpNotification, err := r.DeleteSection(sections[i])
+		if err != nil {
+			return nil, errors.Wrap(err, "Can't delete this project")
+		}
+		notifications = append(notifications, tmpNotification...)
 	}
 
 	err = r.db.Where("project_id = ?", projectId).Delete(&collabs).Error
 	if err != nil {
-		return errors.Wrap(err, "Can't delete this project")
+		return nil, errors.Wrap(err, "Can't delete this project")
 	}
 
 	err = r.db.Where("project_id = ?", projectId).Delete(&favProjects).Error
 	if err != nil {
-		return errors.Wrap(err, "Can't delete this project")
+		return nil, errors.Wrap(err, "Can't delete this project")
 	}
 
 	err = r.db.Where("id = ?", projectId).Delete(&project).Error
 	if err != nil {
-		return errors.Wrap(err, "Can't delete this project")
+		return nil, errors.Wrap(err, "Can't delete this project")
 	}
 
-	return nil
+	return notifications, nil
 }
 
 func (r *Repository) AddCollaborator(ownerId, projectIdStr, collabIdStr string) error {

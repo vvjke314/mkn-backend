@@ -3,6 +3,7 @@ package app
 import (
 	"encoding/json"
 	"mkn-backend/internal/pkg/ds"
+	"mkn-backend/internal/pkg/grpcApi"
 	"net/http"
 	"time"
 
@@ -118,11 +119,15 @@ func (a *Application) DeleteProject(c *gin.Context) {
 		return
 	}
 
-	err = a.repo.DeleteProject(projectId)
+	notifications, err := a.repo.DeleteProject(projectId)
 	if err != nil {
 		log.Println(err)
 		newErrorResponse(c, http.StatusInternalServerError, "")
 		return
+	}
+
+	for i := range notifications {
+		a.grpcClient.CancelNotification(*a.ctx, &grpcApi.CancelNotificationRequest{NotificationId: notifications[i].Id.String()})
 	}
 
 	projects, err := a.repo.GetAllOwnedProjects(userId)

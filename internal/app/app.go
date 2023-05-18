@@ -3,19 +3,27 @@ package app
 import (
 	"context"
 	"fmt"
+	"log"
+
 	"mkn-backend/internal/pkg/config"
+	"mkn-backend/internal/pkg/grpcApi"
 	"mkn-backend/internal/pkg/redisClient"
 	"mkn-backend/internal/pkg/repository"
 
 	"github.com/redis/go-redis/v9"
-	log "github.com/sirupsen/logrus"
+	"google.golang.org/grpc"
+)
+
+const (
+	MailingServicePort string = ":5621"
 )
 
 type Application struct {
-	ctx    *context.Context
-	repo   *repository.Repository
-	redis  *redis.Client
-	config *config.Config
+	ctx        *context.Context
+	repo       *repository.Repository
+	redis      *redis.Client
+	config     *config.Config
+	grpcClient grpcApi.MailingServiceClient
 }
 
 func New(ctx context.Context) (*Application, error) {
@@ -32,13 +40,22 @@ func New(ctx context.Context) (*Application, error) {
 		return nil, err
 	}
 
+	conn, err := grpc.Dial(MailingServicePort, grpc.WithInsecure())
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	c := grpcApi.NewMailingServiceClient(conn)
+
 	redis := redisClient.New()
 
 	return &Application{
-		ctx:    &ctx,
-		repo:   repo,
-		redis:  redis,
-		config: cfg,
+		ctx:        &ctx,
+		repo:       repo,
+		redis:      redis,
+		config:     cfg,
+		grpcClient: c,
 	}, nil
 }
 

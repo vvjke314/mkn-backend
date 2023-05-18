@@ -3,9 +3,10 @@ package grpcApi
 import (
 	context "context"
 	"fmt"
-	"log"
 	"mkn-backend/internal/pkg/config"
 	"mkn-backend/internal/pkg/repository"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type GRPCServer struct {
@@ -33,11 +34,33 @@ func New(ctx context.Context) (*GRPCServer, error) {
 	}, nil
 }
 
-func (s *GRPCServer) UpdateNotificationStatus(context.Context, *UpdateNotificationStatusRequest) (*UpdateNotificationStatusResponse, error) {
-	return nil, nil
+func (s *GRPCServer) UpdateNotificationStatus(ctx context.Context, req *UpdateNotificationStatusRequest) (*UpdateNotificationStatusResponse, error) {
+	notification, err := s.repo.GetNotificationById(req.NotificationId)
+	if err != nil {
+		return nil, err
+	}
+
+	switch req.SendStatus {
+	case 0:
+		notification.Status = "scheduled"
+	case 1:
+		notification.Status = "delivered"
+	case 2:
+		notification.Status = "undelivered"
+	}
+
+	err = s.repo.UpdateNotification(notification)
+	if err != nil {
+		return nil, err
+	}
+
+	return &UpdateNotificationStatusResponse{
+		SendStatus: req.SendStatus,
+	}, nil
 }
 
 func (s *GRPCServer) GetFullNotificationInfo(ctx context.Context, req *NotificationInfoRequest) (*NotificationInfoResponse, error) {
+	log.Printf("GetFullNotificationInfo function has called with notification_id: %v", req.NotificationId)
 	notification, err := s.repo.GetNotificationById(req.NotificationId)
 	if err != nil {
 		return nil, err
@@ -67,6 +90,7 @@ func (s *GRPCServer) GetFullNotificationInfo(ctx context.Context, req *Notificat
 
 	emails = append(emails, user.Email)
 
+	log.Printf("GetFullNotificationInfo function has returned response with notification_id: %v", req.NotificationId)
 	return &NotificationInfoResponse{
 		NotificationId:    notification.Id.String(),
 		ProjectTitle:      project.Title,

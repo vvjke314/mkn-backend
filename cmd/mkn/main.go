@@ -2,11 +2,14 @@ package main
 
 import (
 	"context"
-	"log"
 	"mkn-backend/internal/app"
 	"mkn-backend/internal/pkg/grpcApi"
 	"net"
+	"os"
 	"sync"
+
+	"github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -36,6 +39,12 @@ func main() {
 		panic("Can't create grpc server")
 	}
 
+	f, err := os.OpenFile("grpclogs", os.O_WRONLY|os.O_CREATE, 0755)
+	if err != nil {
+		panic("Can't setup log file")
+	}
+	logrus.SetOutput(f)
+
 	wg.Add(1)
 	go func(a *app.Application) {
 		defer wg.Done()
@@ -53,11 +62,11 @@ func main() {
 		//зарегистрировать сервисы
 		l, err := net.Listen("tcp", ":9000")
 		if err != nil {
-			log.Fatal(err)
+			log.WithError(err)
 		}
 
 		if err := s.Serve(l); err != nil {
-			log.Fatal(err)
+			log.WithError(err)
 		}
 
 	}(server)

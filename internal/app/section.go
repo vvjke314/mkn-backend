@@ -3,7 +3,10 @@ package app
 import (
 	"encoding/json"
 	"mkn-backend/internal/pkg/ds"
+	"mkn-backend/internal/pkg/grpcApi"
 	"net/http"
+	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -117,11 +120,15 @@ func (a *Application) DeleteSection(c *gin.Context) {
 		return
 	}
 
-	err = a.repo.DeleteSection(section)
+	notifications, err := a.repo.DeleteSection(section)
 	if err != nil {
 		log.Println(err)
 		newErrorResponse(c, http.StatusInternalServerError, "Can't delete section")
 		return
+	}
+
+	for i := range notifications {
+		a.grpcClient.CancelNotification(*a.ctx, &grpcApi.CancelNotificationRequest{NotificationId: notifications[i].Id.String()})
 	}
 
 	sections, err := a.repo.GetAllSections(section.ProjectId.String())
@@ -193,6 +200,11 @@ func (a *Application) CreateNotification(c *gin.Context) {
 		newErrorResponse(c, http.StatusInternalServerError, "Can't create notification")
 		return
 	}
+
+	deadline := notification.Deadline.Sub(time.Now())
+	deadlineInt := int(deadline.Seconds())
+	deadlineStr := strconv.Itoa(deadlineInt)
+	a.grpcClient.ScheduleNotification(*a.ctx, &grpcApi.ScheduleRequest{NotificationId: notification.Id.String(), Deadline: deadlineStr})
 
 	notifications, err := a.repo.GetAllNotifications(sectionId)
 	if err != nil {

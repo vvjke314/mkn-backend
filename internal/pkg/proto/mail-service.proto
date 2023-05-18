@@ -7,7 +7,6 @@ option go_package = "/grpcApi";
 message ScheduleRequest { 
     string notification_id = 1;
     string deadline = 2;
-    
 }
 
 message ScheduleResponse {

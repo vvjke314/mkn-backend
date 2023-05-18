@@ -3,7 +3,9 @@ package app
 import (
 	"encoding/json"
 	"mkn-backend/internal/pkg/ds"
+	"mkn-backend/internal/pkg/grpcApi"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -71,6 +73,11 @@ func (a *Application) UpdateNotification(c *gin.Context) {
 		return
 	}
 
+	deadline := notification.Deadline.Sub(time.Now())
+	deadlineInt := int(deadline.Seconds())
+	deadlineStr := strconv.Itoa(deadlineInt)
+	a.grpcClient.ScheduleNotification(*a.ctx, &grpcApi.ScheduleRequest{NotificationId: notification.Id.String(), Deadline: deadlineStr})
+
 	notifications, err := a.repo.GetAllNotifications(notification.SectionId.String())
 	if err != nil {
 		log.Println(err)
@@ -129,6 +136,7 @@ func (a *Application) DeleteNotification(c *gin.Context) {
 		return
 	}
 
+	a.grpcClient.CancelNotification(*a.ctx, &grpcApi.CancelNotificationRequest{NotificationId: notificationId})
 	c.JSON(http.StatusOK, notifications)
 }
 
@@ -190,6 +198,11 @@ func (a *Application) ResendNotification(c *gin.Context) {
 		newErrorResponse(c, http.StatusInternalServerError, "Can't change notification")
 		return
 	}
+
+	deadline := notification.Deadline.Sub(time.Now())
+	deadlineInt := int(deadline.Seconds())
+	deadlineStr := strconv.Itoa(deadlineInt)
+	a.grpcClient.ScheduleNotification(*a.ctx, &grpcApi.ScheduleRequest{NotificationId: notification.Id.String(), Deadline: deadlineStr})
 
 	notifications, err := a.repo.GetAllNotifications(notification.SectionId.String())
 	if err != nil {

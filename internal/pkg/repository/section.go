@@ -48,19 +48,19 @@ func (r *Repository) UpdateSection(section ds.Section) error {
 	return nil
 }
 
-func (r *Repository) DeleteSection(section ds.Section) error {
+func (r *Repository) DeleteSection(section ds.Section) ([]ds.Notification, error) {
 	notifications := []ds.Notification{}
 	err := r.db.Where("section_id = ?", section.Id.String()).Delete(&notifications).Error
 	if err != nil {
-		return errors.Wrap(err, "Can't delete section in repo")
+		return nil, errors.Wrap(err, "Can't delete section in repo")
 	}
 
 	err = r.db.Delete(&section).Error
 	if err != nil {
-		return errors.Wrap(err, "Can't delete section in repo")
+		return nil, errors.Wrap(err, "Can't delete section in repo")
 	}
 
-	return nil
+	return notifications, nil
 }
 
 func (r *Repository) CreateNotification(notification ds.Notification) error {
