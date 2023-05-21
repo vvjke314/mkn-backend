@@ -1,5 +1,5 @@
 [database]
-db_host = "localhost"
+db_host = "db"
 db_name = "mknDb"
 db_user = "mknAdmin"
 db_password = "mamatKunem"

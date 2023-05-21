@@ -1,3 +1,3 @@
-time="2023-05-18T11:05:57+03:00" level=info msg="GRPC SERVER STARTED"
+time="2023-05-21T19:22:54+03:00" level=info msg="GRPC SERVER STARTED"
 time="2023-05-18T11:06:32+03:00" level=info msg="GetFullNotificationInfo function has called with notification_id: 0826f473-8ecc-497b-9f12-d01afb0fa3ad"
 time="2023-05-18T11:06:32+03:00" level=info msg="GetFullNotificationInfo function has returned response with notification_id: 0826f473-8ecc-497b-9f12-d01afb0fa3ad"
