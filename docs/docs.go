@@ -923,8 +923,8 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Collaborator ID",
-                        "name": "collaborator_id",
+                        "description": "Collaborator nickname",
+                        "name": "collaborator_name",
                         "in": "query",
                         "required": true
                     },
@@ -977,8 +977,8 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Collaborator ID",
-                        "name": "collaborator_id",
+                        "description": "Collaborator nickname",
+                        "name": "collaborator_name",
                         "in": "query",
                         "required": true
                     },

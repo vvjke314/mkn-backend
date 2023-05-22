@@ -469,9 +469,9 @@ paths:
       description: Removes a collaborator from the current project and returns all
         collaborators of this project
       parameters:
-      - description: Collaborator ID
+      - description: Collaborator nickname
         in: query
-        name: collaborator_id
+        name: collaborator_name
         required: true
         type: string
       - description: Project ID
@@ -505,9 +505,9 @@ paths:
       description: Adds a collaborator to the current project and returns all collaborators
         of this project
       parameters:
-      - description: Collaborator ID
+      - description: Collaborator nickname
         in: query
-        name: collaborator_id
+        name: collaborator_name
         required: true
         type: string
       - description: Project ID

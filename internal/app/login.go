@@ -69,6 +69,7 @@ func (a *Application) Login(c *gin.Context) {
 	usr, err := a.repo.GetUser(req.Username, generateHashString(req.Password))
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, "No such user in database")
+		return
 	}
 
 	a.redis.Set(*a.ctx, token, usr.Id.String(), tokenTTL)
@@ -163,7 +164,7 @@ func (a *Application) SignUp(c *gin.Context) {
 	})
 
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "")
+		newErrorResponse(c, http.StatusBadRequest, "This nickname is already taken")
 		return
 	}
 

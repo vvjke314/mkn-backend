@@ -184,12 +184,14 @@ func (a *Application) CreateNotification(c *gin.Context) {
 		return
 	}
 
+	dl, _ := time.Parse(time.RFC3339, req.Deadline)
+
 	notification := &ds.Notification{
 		Id:          uuid.New(),
 		SectionId:   section.Id,
 		Title:       req.Title,
 		Description: req.Description,
-		Deadline:    req.Deadline,
+		Deadline:    dl,
 		Status:      "scheduled",
 		ErrorStatus: 0,
 	}

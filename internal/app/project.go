@@ -299,7 +299,7 @@ func (a *Application) GetAllSections(c *gin.Context) {
 // @Tags         collaborations
 // @Produce      json
 // @Security BearerAuth
-// @Param collaborator_id query string true "Collaborator ID"
+// @Param collaborator_name query string true "Collaborator nickname"
 // @Param project_id path string true "Project ID"
 // @Success 200 {object} []ds.User
 // @Failure 403 {object} errorResponse
@@ -314,10 +314,17 @@ func (a *Application) AddCollaborator(c *gin.Context) {
 	}
 
 	projectId := c.Param("project_id")
-	collabId := c.Query("collaborator_id")
+	collab := c.Query("collaborator_name")
 
-	if collabId == "" {
+	if collab == "" {
 		newErrorResponse(c, http.StatusBadRequest, "You need to add query param \"collaborator_id\"")
+	}
+
+	collabId, err := a.repo.GetUserByName(collab)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusBadRequest, "Invalid collaborator nickname")
+		return
 	}
 
 	project, err := a.repo.GetProjectById(projectId)
@@ -332,12 +339,12 @@ func (a *Application) AddCollaborator(c *gin.Context) {
 		return
 	}
 
-	if a.repo.IsCollaborator(collabId, projectId) {
+	if a.repo.IsCollaborator(collabId.Id.String(), projectId) {
 		newErrorResponse(c, http.StatusBadRequest, "Collaboration is already exists")
 		return
 	}
 
-	err = a.repo.AddCollaborator(userId, projectId, collabId)
+	err = a.repo.AddCollaborator(userId, projectId, collabId.Id.String())
 	if err != nil {
 		log.Println(err)
 		newErrorResponse(c, http.StatusInternalServerError, "Can't add collaborator")
@@ -360,7 +367,7 @@ func (a *Application) AddCollaborator(c *gin.Context) {
 // @Tags         collaborations
 // @Produce      json
 // @Security BearerAuth
-// @Param collaborator_id query string true "Collaborator ID"
+// @Param collaborator_name query string true "Collaborator nickname"
 // @Param project_id path string true "Project ID"
 // @Success 200 {object} []ds.Collaboration
 // @Failure 403 {object} errorResponse
@@ -375,10 +382,17 @@ func (a *Application) DeleteCollaborator(c *gin.Context) {
 	}
 
 	projectId := c.Param("project_id")
-	collabId := c.Query("collaborator_id")
+	collab := c.Query("collaborator_name")
 
-	if collabId == "" {
+	if collab == "" {
 		newErrorResponse(c, http.StatusBadRequest, "You need to add query param \"collaborator_id\"")
+	}
+
+	collabId, err := a.repo.GetUserByName(collab)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusBadRequest, "Invalid collaborator nickname")
+		return
 	}
 
 	project, err := a.repo.GetProjectById(projectId)
@@ -393,12 +407,12 @@ func (a *Application) DeleteCollaborator(c *gin.Context) {
 		return
 	}
 
-	if !a.repo.IsCollaborator(collabId, projectId) {
+	if !a.repo.IsCollaborator(collabId.Id.String(), projectId) {
 		newErrorResponse(c, http.StatusBadRequest, "Collaboration is not exists")
 		return
 	}
 
-	err = a.repo.DeleteCollaborator(userId, projectId, collabId)
+	err = a.repo.DeleteCollaborator(userId, projectId, collabId.Id.String())
 	if err != nil {
 		log.Println(err)
 		newErrorResponse(c, http.StatusInternalServerError, "Can't add collaborator")

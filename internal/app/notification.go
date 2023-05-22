@@ -2,6 +2,7 @@ package app
 
 import (
 	"encoding/json"
+	"log"
 	"mkn-backend/internal/pkg/ds"
 	"mkn-backend/internal/pkg/grpcApi"
 	"net/http"
@@ -9,7 +10,6 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	log "github.com/sirupsen/logrus"
 )
 
 // UpdateNotification godoc
@@ -56,6 +56,8 @@ func (a *Application) UpdateNotification(c *gin.Context) {
 		return
 	}
 
+	log.Println(req.DeadLine)
+
 	if req.Title != "" {
 		notification.Title = req.Title
 	}
@@ -63,8 +65,11 @@ func (a *Application) UpdateNotification(c *gin.Context) {
 		notification.Description = req.Description
 	}
 	if req.DeadLine != "" {
-		notification.Deadline, _ = time.Parse("2006-01-02T15:04:05", req.DeadLine)
+		log.Println(req.DeadLine)
+		notification.Deadline, _ = time.Parse(time.RFC3339, req.DeadLine)
 	}
+
+	log.Println(notification.Deadline)
 
 	err = a.repo.UpdateNotification(notification)
 	if err != nil {
@@ -185,7 +190,7 @@ func (a *Application) ResendNotification(c *gin.Context) {
 	}
 
 	if req.Deadline != "" {
-		notification.Deadline, _ = time.Parse("2006-01-02T15:04:05", req.Deadline)
+		notification.Deadline, _ = time.Parse(time.RFC3339, req.Deadline)
 	}
 
 	if notification.Status == "undelivered" {
