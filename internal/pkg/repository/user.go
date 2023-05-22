@@ -27,10 +27,23 @@ func (r *Repository) GetProject(id string) (*ds.Project, error) {
 	return project, nil
 }
 
-func (r *Repository) GetAllProjects() ([]ds.Project, error) {
+func (r *Repository) GetAllProjects(userId string) ([]ds.Project, error) {
+	tmpProjects := []ds.Project{}
 	projects := []ds.Project{}
+	collaborations := []ds.Collaboration{}
 
-	_ = r.db.Find(&projects)
+	_ = r.db.Where("owner_id = ?", userId).Find(&tmpProjects)
+	projects = append(projects, tmpProjects...)
+
+	_ = r.db.Where("user_id = ?", userId).Find(&collaborations)
+	for i := range collaborations {
+		p, err := r.GetProjectById(collaborations[i].ProjectId.String())
+		if err != nil {
+			return nil, err
+		}
+		projects = append(projects, p)
+	}
+
 	return projects, nil
 }
 

@@ -79,7 +79,7 @@ func (a *Application) UpdateSection(c *gin.Context) {
 	sections, err := a.repo.GetAllSections(section.ProjectId.String())
 	if err != nil {
 		log.Println(err)
-		newErrorResponse(c, http.StatusInternalServerError, "Can't get all projects")
+		newErrorResponse(c, http.StatusInternalServerError, "Can't get all sections")
 		return
 	}
 

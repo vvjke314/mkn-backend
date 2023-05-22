@@ -162,12 +162,20 @@ func (a *Application) GetFavoriteProjects(c *gin.Context) {
 // @Description  Returns all projects
 // @Tags         project
 // @Produce      json
+// @Security BearerAuth
 // @Success      200 {object} []ds.Project
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Router      /projects [get]
 func (a *Application) GetAllProjects(c *gin.Context) {
-	projects, err := a.repo.GetAllProjects()
+	userId, err := a.GetUserIdByJWT(c)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusUnauthorized, "No such authoriuzed user")
+		return
+	}
+
+	projects, err := a.repo.GetAllProjects(userId)
 	if err != nil {
 		log.Println(err)
 		newErrorResponse(c, http.StatusBadRequest, "Can't get all projects")
