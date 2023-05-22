@@ -78,9 +78,8 @@ func (a *Application) UpdateNotification(c *gin.Context) {
 		return
 	}
 
-	deadline := notification.Deadline.Sub(time.Now())
-	deadlineInt := int(deadline.Seconds())
-	deadlineStr := strconv.Itoa(deadlineInt)
+	deadline := notification.Deadline.Unix()
+	deadlineStr := strconv.Itoa(int(deadline))
 	a.grpcClient.ScheduleNotification(*a.ctx, &grpcApi.ScheduleRequest{NotificationId: notification.Id.String(), Deadline: deadlineStr})
 
 	notifications, err := a.repo.GetAllNotifications(notification.SectionId.String())
@@ -204,9 +203,8 @@ func (a *Application) ResendNotification(c *gin.Context) {
 		return
 	}
 
-	deadline := notification.Deadline.Sub(time.Now())
-	deadlineInt := int(deadline.Seconds())
-	deadlineStr := strconv.Itoa(deadlineInt)
+	deadline := notification.Deadline.Unix()
+	deadlineStr := strconv.Itoa(int(deadline))
 	a.grpcClient.ScheduleNotification(*a.ctx, &grpcApi.ScheduleRequest{NotificationId: notification.Id.String(), Deadline: deadlineStr})
 
 	notifications, err := a.repo.GetAllNotifications(notification.SectionId.String())
