@@ -63,7 +63,7 @@ func (a *Application) UpdateNotification(c *gin.Context) {
 		notification.Description = req.Description
 	}
 	if req.DeadLine != "" {
-		notification.Deadline, _ = time.Parse("2006-01-02T15:04:05Z07:00", req.DeadLine)
+		notification.Deadline, _ = time.Parse("2006-01-02T15:04:05", req.DeadLine)
 	}
 
 	err = a.repo.UpdateNotification(notification)
@@ -185,7 +185,7 @@ func (a *Application) ResendNotification(c *gin.Context) {
 	}
 
 	if req.Deadline != "" {
-		notification.Deadline, _ = time.Parse("2006-01-02T15:04:05Z07:00", req.Deadline)
+		notification.Deadline, _ = time.Parse("2006-01-02T15:04:05", req.Deadline)
 	}
 
 	if notification.Status == "undelivered" {
