@@ -34,11 +34,10 @@ func (repo *Repository) GetUserByName(username string) (*ds.User, error) {
 }
 
 func (repo *Repository) SignUp(user *ds.User) (*ds.User, error) {
-	_, err := repo.GetUserByName(user.Username)
-	if err == nil {
-		return nil, errors.Wrap(err, "This nickname is already taken")
+	err := repo.db.Create(user).Error
+	if err != nil {
+		return nil, errors.Wrap(err, "This username is already taken")
 	}
-	_ = repo.db.Create(user)
 
 	res, err := repo.GetUser(user.Username, user.Password)
 	if err != nil {
