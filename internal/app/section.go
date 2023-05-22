@@ -25,7 +25,7 @@ import (
 // @Failure 403 {object} errorResponse
 // @Failure 404 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /project/section/{section_id} [put]
+// @Router      /api/project/section/{section_id} [put]
 func (a *Application) UpdateSection(c *gin.Context) {
 	userId, err := a.GetUserIdByJWT(c)
 	if err != nil {
@@ -97,7 +97,7 @@ func (a *Application) UpdateSection(c *gin.Context) {
 // @Failure 403 {object} errorResponse
 // @Failure 404 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /project/section/{section_id} [delete]
+// @Router      /api/project/section/{section_id} [delete]
 func (a *Application) DeleteSection(c *gin.Context) {
 	userId, err := a.GetUserIdByJWT(c)
 	if err != nil {
@@ -152,7 +152,7 @@ func (a *Application) DeleteSection(c *gin.Context) {
 // @Success 200 {object} []ds.Notification
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /project/section/{section_id}/notification [post]
+// @Router      /api/project/section/{section_id}/notification [post]
 func (a *Application) CreateNotification(c *gin.Context) {
 	req := &ds.CreateNotificationRequest{}
 
@@ -228,7 +228,7 @@ func (a *Application) CreateNotification(c *gin.Context) {
 // @Success      200 {object} []ds.Notification
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /project/section/{section_id}/notifications [get]
+// @Router      /api/project/section/{section_id}/notifications [get]
 func (a *Application) GetAllNotifications(c *gin.Context) {
 	userId, err := a.GetUserIdByJWT(c)
 	if err != nil {
@@ -266,7 +266,7 @@ func (a *Application) GetAllNotifications(c *gin.Context) {
 // @Failure 403 {object} errorResponse
 // @Failure 404 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /project/section/notification/{notification_id} [get]
+// @Router      /api/project/section/notification/{notification_id} [get]
 func (a *Application) GetNotification(c *gin.Context) {
 	userId, err := a.GetUserIdByJWT(c)
 	if err != nil {

@@ -10,7 +10,7 @@ import "github.com/gin-gonic/gin"
 // @Success      200 {object} []ds.Notification
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /undelivered_notifications [get]
+// @Router      /api/undelivered_notifications [get]
 func (a *Application) GetUndeliviredNotifications(c *gin.Context) {
 
 }

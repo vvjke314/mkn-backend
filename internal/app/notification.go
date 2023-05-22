@@ -24,7 +24,7 @@ import (
 // @Failure 403 {object} errorResponse
 // @Failure 404 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /project/section/notification/{notification_id} [put]
+// @Router      /api/project/section/notification/{notification_id} [put]
 func (a *Application) UpdateNotification(c *gin.Context) {
 	req := &ds.UpdateNotificationRequest{}
 
@@ -104,7 +104,7 @@ func (a *Application) UpdateNotification(c *gin.Context) {
 // @Failure 403 {object} errorResponse
 // @Failure 404 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /project/section/notification/{notification_id} [delete]
+// @Router      /api/project/section/notification/{notification_id} [delete]
 func (a *Application) DeleteNotification(c *gin.Context) {
 	userId, err := a.GetUserIdByJWT(c)
 	if err != nil {
@@ -157,7 +157,7 @@ func (a *Application) DeleteNotification(c *gin.Context) {
 // @Failure 403 {object} errorResponse
 // @Failure 404 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /project/section/notification/resend/{notification_id} [put]
+// @Router      /api/project/section/notification/resend/{notification_id} [put]
 func (a *Application) ResendNotification(c *gin.Context) {
 	req := &ds.ResendNotificationRequest{}
 

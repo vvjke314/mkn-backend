@@ -40,7 +40,7 @@ type LoginReqBody struct {
 // @Param data body LoginReqBody true "User data"
 // @Success      200 {object} ds.User
 // @Failure 500 {object} errorResponse
-// @Router      /login [post]
+// @Router      /api/login [post]
 func (a *Application) Login(c *gin.Context) {
 	req := &LoginReqBody{}
 
@@ -87,7 +87,7 @@ func (a *Application) Login(c *gin.Context) {
 // @Success      200 {object} ds.User
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /logout [get]
+// @Router      /api/logout [get]
 func (a *Application) Logout(c *gin.Context) {
 	jwtStr, err := a.GetJWT(c)
 	if err != nil {
@@ -130,7 +130,7 @@ type SignUpReqBody struct {
 // @Param data body SignUpReqBody true "User data"
 // @Success      200 {object} ds.User
 // @Failure 500 {object} errorResponse
-// @Router      /signup [post]
+// @Router      /api/signup [post]
 func (a *Application) SignUp(c *gin.Context) {
 	req := &SignUpReqBody{}
 
