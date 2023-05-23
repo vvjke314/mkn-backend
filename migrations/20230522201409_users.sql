@@ -6,7 +6,7 @@ CREATE TABLE users (
     username varchar UNIQUE,
     is_manager int,
     password varchar,
-    email varchar,
+    email varchar UNIQUE,
     PRIMARY KEY (id)
 );
 

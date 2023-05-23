@@ -155,18 +155,23 @@ func (a *Application) SignUp(c *gin.Context) {
 		return
 	}
 
-	user, err := a.repo.SignUp(&ds.User{
+	if a.repo.EmailExistence(req.Email) {
+		newErrorResponse(c, http.StatusBadRequest, "This email is already taken")
+		return
+	}
+
+	if a.repo.UserNameExistence(req.Username) {
+		newErrorResponse(c, http.StatusBadRequest, "This nickname is already taken")
+		return
+	}
+
+	user, _ := a.repo.SignUp(&ds.User{
 		Id:        uuid.New(),
 		Username:  req.Username,
 		IsManager: 0,
 		Email:     req.Email,
 		Password:  generateHashString(req.Password),
 	})
-
-	if err != nil {
-		newErrorResponse(c, http.StatusBadRequest, "This nickname is already taken")
-		return
-	}
 
 	c.JSON(http.StatusOK, user)
 }

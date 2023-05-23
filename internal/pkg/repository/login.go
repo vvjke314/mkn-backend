@@ -46,3 +46,8 @@ func (repo *Repository) SignUp(user *ds.User) (*ds.User, error) {
 
 	return res, nil
 }
+
+func (repo *Repository) UserNameExistence(username string) bool {
+	err := repo.db.Where("username = ?", username).Find(&ds.User{}).RowsAffected
+	return err != 0
+}

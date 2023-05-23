@@ -320,6 +320,12 @@ func (a *Application) ChangeEmail(c *gin.Context) {
 		return
 	}
 
+	if a.repo.EmailExistence(req.Email) {
+		log.Println(err)
+		newErrorResponse(c, http.StatusBadRequest, "This email is already taken")
+		return
+	}
+
 	err = a.repo.ChangeEmail(userId, req.Email)
 	if err != nil {
 		log.Println(err)

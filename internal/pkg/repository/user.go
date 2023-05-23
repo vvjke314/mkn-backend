@@ -130,6 +130,11 @@ func (r *Repository) ChangeEmail(userId, newEmail string) error {
 	return nil
 }
 
+func (r *Repository) EmailExistence(email string) bool {
+	err := r.db.Where("email = ?", email).Find(&ds.User{}).RowsAffected
+	return err != 0
+}
+
 func (r *Repository) LastSixProjects(userId string) ([]ds.Project, error) {
 	projects := []ds.Project{}
 	err := r.db.Order("last_edited desc").Where("owner_id = ?", userId).Limit(6).Find(&projects).Error
