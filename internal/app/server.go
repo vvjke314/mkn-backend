@@ -26,49 +26,49 @@ func (a *Application) StartServer() {
 	r.Use(CORSMiddleware())
 
 	//authorize
-	r.POST("/login", a.Login)   //+
-	r.GET("/logout", a.Logout)  //+
-	r.POST("/signup", a.SignUp) //+
+	r.POST("/api/login", a.Login)   //+
+	r.GET("/api/logout", a.Logout)  //+
+	r.POST("/api/signup", a.SignUp) //+
 
-	r.GET("/projects", a.GetAllProjects) //+
+	r.GET("/api/projects", a.GetAllProjects) //+
 
 	authorized := r.Group("/")
 
 	authorized.Use(a.UserIdentity)
 	{
 		//user
-		authorized.POST("/project", a.CreateProject)                 //+
-		authorized.GET("/upcoming", a.GetUpcomingNotifications)      //-
-		authorized.GET("/favorites", a.GetFavoriteProjects)          //+
-		authorized.POST("/favorite", a.AddFavorite)                  //+
-		authorized.DELETE("/favorite/:project_id", a.DeleteFavorite) //+
-		authorized.GET("/projects/owned", a.GetAllOwnedProjects)     //+
-		authorized.PUT("/email", a.ChangeEmail)                      //+
-		authorized.GET("/projects/latest", a.LastSixProjects)        //+
+		authorized.POST("/api/project", a.CreateProject)                 //+
+		authorized.GET("/api/upcoming", a.GetUpcomingNotifications)      //-
+		authorized.GET("/api/favorites", a.GetFavoriteProjects)          //+
+		authorized.POST("/api/favorite", a.AddFavorite)                  //+
+		authorized.DELETE("/api/favorite/:project_id", a.DeleteFavorite) //+
+		authorized.GET("/api/projects/owned", a.GetAllOwnedProjects)     //+
+		authorized.PUT("/api/email", a.ChangeEmail)                      //+
+		authorized.GET("/api/projects/latest", a.LastSixProjects)        //+
 
 		//project
-		authorized.PUT("/project/:project_id", a.UpdateProject)                      //+
-		authorized.DELETE("/project/:project_id", a.DeleteProject)                   //+
-		authorized.GET("/project/:project_id/collaborators", a.GetCollaborators)     //+
-		authorized.GET("/project/:project_id/sections", a.GetAllSections)            //+
-		authorized.POST("/project/:project_id/collaborator", a.AddCollaborator)      //+
-		authorized.DELETE("/project/:project_id/collaborator", a.DeleteCollaborator) //+
+		authorized.PUT("/api/project/:project_id", a.UpdateProject)                      //+
+		authorized.DELETE("/api/project/:project_id", a.DeleteProject)                   //+
+		authorized.GET("/api/project/:project_id/collaborators", a.GetCollaborators)     //+
+		authorized.GET("/api/project/:project_id/sections", a.GetAllSections)            //+
+		authorized.POST("/api/project/:project_id/collaborator", a.AddCollaborator)      //+
+		authorized.DELETE("/api/project/:project_id/collaborator", a.DeleteCollaborator) //+
 
 		//section
-		authorized.PUT("/project/section/:section_id", a.UpdateSection)                     //+
-		authorized.DELETE("/project/section/:section_id", a.DeleteSection)                  //+
-		authorized.POST("/project/:project_id/section", a.CreateSection)                    //+
-		authorized.GET("/project/section/:section_id/notifications", a.GetAllNotifications) //+
-		authorized.GET("/project/section/notification/:notification_id", a.GetNotification) //+
+		authorized.PUT("/api/project/section/:section_id", a.UpdateSection)                     //+
+		authorized.DELETE("/api/project/section/:section_id", a.DeleteSection)                  //+
+		authorized.POST("/api/project/:project_id/section", a.CreateSection)                    //+
+		authorized.GET("/api/project/section/:section_id/notifications", a.GetAllNotifications) //+
+		authorized.GET("/api/project/section/notification/:notification_id", a.GetNotification) //+
 
 		//notification
-		authorized.PUT("/project/section/notification/:notification_id", a.UpdateNotification)        //+
-		authorized.DELETE("/project/section/notification/:notification_id", a.DeleteNotification)     //+
-		authorized.POST("/project/section/:section_id/notification", a.CreateNotification)            //+
-		authorized.PUT("/project/section/notification/resend/:notification_id", a.ResendNotification) //+
+		authorized.PUT("/api/project/section/notification/:notification_id", a.UpdateNotification)        //+
+		authorized.DELETE("/api/project/section/notification/:notification_id", a.DeleteNotification)     //+
+		authorized.POST("/api/project/section/:section_id/notification", a.CreateNotification)            //+
+		authorized.PUT("/api/project/section/notification/resend/:notification_id", a.ResendNotification) //+
 
 		//moderator
-		authorized.GET("/undelivered_notifications", a.GetUndeliviredNotifications) //-
+		authorized.GET("/api/undelivered_notifications", a.GetUndeliviredNotifications) //-
 	}
 
 	r.Run()

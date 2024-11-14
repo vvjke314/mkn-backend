@@ -2,6 +2,7 @@ package app
 
 import (
 	"encoding/json"
+	"log"
 	"mkn-backend/internal/pkg/ds"
 	"mkn-backend/internal/pkg/grpcApi"
 	"net/http"
@@ -9,7 +10,6 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	log "github.com/sirupsen/logrus"
 )
 
 // UpdateNotification godoc
@@ -24,7 +24,7 @@ import (
 // @Failure 403 {object} errorResponse
 // @Failure 404 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /project/section/notification/{notification_id} [put]
+// @Router      /api/project/section/notification/{notification_id} [put]
 func (a *Application) UpdateNotification(c *gin.Context) {
 	req := &ds.UpdateNotificationRequest{}
 
@@ -56,6 +56,8 @@ func (a *Application) UpdateNotification(c *gin.Context) {
 		return
 	}
 
+	log.Println(req.DeadLine)
+
 	if req.Title != "" {
 		notification.Title = req.Title
 	}
@@ -63,8 +65,11 @@ func (a *Application) UpdateNotification(c *gin.Context) {
 		notification.Description = req.Description
 	}
 	if req.DeadLine != "" {
-		notification.Deadline, _ = time.Parse("2006-01-02T15:04:05Z07:00", req.DeadLine)
+		log.Println(req.DeadLine)
+		notification.Deadline, _ = time.Parse(time.RFC3339, req.DeadLine)
 	}
+
+	log.Println(notification.Deadline)
 
 	err = a.repo.UpdateNotification(notification)
 	if err != nil {
@@ -73,9 +78,8 @@ func (a *Application) UpdateNotification(c *gin.Context) {
 		return
 	}
 
-	deadline := notification.Deadline.Sub(time.Now())
-	deadlineInt := int(deadline.Seconds())
-	deadlineStr := strconv.Itoa(deadlineInt)
+	deadline := notification.Deadline.Unix()
+	deadlineStr := strconv.FormatInt(deadline, 10)
 	a.grpcClient.ScheduleNotification(*a.ctx, &grpcApi.ScheduleRequest{NotificationId: notification.Id.String(), Deadline: deadlineStr})
 
 	notifications, err := a.repo.GetAllNotifications(notification.SectionId.String())
@@ -99,7 +103,7 @@ func (a *Application) UpdateNotification(c *gin.Context) {
 // @Failure 403 {object} errorResponse
 // @Failure 404 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /project/section/notification/{notification_id} [delete]
+// @Router      /api/project/section/notification/{notification_id} [delete]
 func (a *Application) DeleteNotification(c *gin.Context) {
 	userId, err := a.GetUserIdByJWT(c)
 	if err != nil {
@@ -152,7 +156,7 @@ func (a *Application) DeleteNotification(c *gin.Context) {
 // @Failure 403 {object} errorResponse
 // @Failure 404 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /project/section/notification/resend/{notification_id} [put]
+// @Router      /api/project/section/notification/resend/{notification_id} [put]
 func (a *Application) ResendNotification(c *gin.Context) {
 	req := &ds.ResendNotificationRequest{}
 
@@ -185,7 +189,7 @@ func (a *Application) ResendNotification(c *gin.Context) {
 	}
 
 	if req.Deadline != "" {
-		notification.Deadline, _ = time.Parse("2006-01-02T15:04:05Z07:00", req.Deadline)
+		notification.Deadline, _ = time.Parse(time.RFC3339, req.Deadline)
 	}
 
 	if notification.Status == "undelivered" {
@@ -199,9 +203,8 @@ func (a *Application) ResendNotification(c *gin.Context) {
 		return
 	}
 
-	deadline := notification.Deadline.Sub(time.Now())
-	deadlineInt := int(deadline.Seconds())
-	deadlineStr := strconv.Itoa(deadlineInt)
+	deadline := notification.Deadline.Unix()
+	deadlineStr := strconv.FormatInt(deadline, 10)
 	a.grpcClient.ScheduleNotification(*a.ctx, &grpcApi.ScheduleRequest{NotificationId: notification.Id.String(), Deadline: deadlineStr})
 
 	notifications, err := a.repo.GetAllNotifications(notification.SectionId.String())

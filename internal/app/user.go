@@ -22,7 +22,7 @@ import (
 // @Failure 403 {object} errorResponse
 // @Failure 404 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /project [post]
+// @Router      /api/project [post]
 func (a *Application) CreateProject(c *gin.Context) {
 	req := &ds.CreateProjectRequest{}
 
@@ -72,7 +72,7 @@ func (a *Application) CreateProject(c *gin.Context) {
 // @Success      200 {object} []ds.Notification
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /upcoming [get]
+// @Router      /api/upcoming [get]
 func (a *Application) GetUpcomingNotifications(c *gin.Context) {
 	userId, err := a.GetUserIdByJWT(c)
 	if err != nil {
@@ -100,7 +100,7 @@ func (a *Application) GetUpcomingNotifications(c *gin.Context) {
 // @Success      200 {object} []ds.Project
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /favorites [get]
+// @Router      /api/favorites [get]
 func (a *Application) GetFavoriteProjects(c *gin.Context) {
 	userId, err := a.GetUserIdByJWT(c)
 	if err != nil {
@@ -162,12 +162,20 @@ func (a *Application) GetFavoriteProjects(c *gin.Context) {
 // @Description  Returns all projects
 // @Tags         project
 // @Produce      json
+// @Security BearerAuth
 // @Success      200 {object} []ds.Project
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /projects [get]
+// @Router      /api/projects [get]
 func (a *Application) GetAllProjects(c *gin.Context) {
-	projects, err := a.repo.GetAllProjects()
+	userId, err := a.GetUserIdByJWT(c)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusUnauthorized, "No such authoriuzed user")
+		return
+	}
+
+	projects, err := a.repo.GetAllProjects(userId)
 	if err != nil {
 		log.Println(err)
 		newErrorResponse(c, http.StatusBadRequest, "Can't get all projects")
@@ -186,7 +194,7 @@ func (a *Application) GetAllProjects(c *gin.Context) {
 // @Success      200 {object} []ds.Project
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /projects/owned [get]
+// @Router      /api/projects/owned [get]
 func (a *Application) GetAllOwnedProjects(c *gin.Context) {
 	userId, err := a.GetUserIdByJWT(c)
 	if err != nil {
@@ -215,7 +223,7 @@ func (a *Application) GetAllOwnedProjects(c *gin.Context) {
 // @Success      200 {object} []ds.FavoriteProject
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /favorite [post]
+// @Router      /api/favorite [post]
 func (a *Application) AddFavorite(c *gin.Context) {
 	userId, err := a.GetUserIdByJWT(c)
 	if err != nil {
@@ -258,7 +266,7 @@ func (a *Application) AddFavorite(c *gin.Context) {
 // @Success      200 {object} []ds.FavoriteProject
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /favorite/{project_id} [delete]
+// @Router      /api/favorite/{project_id} [delete]
 func (a *Application) DeleteFavorite(c *gin.Context) {
 	userId, err := a.GetUserIdByJWT(c)
 	if err != nil {
@@ -295,7 +303,7 @@ func (a *Application) DeleteFavorite(c *gin.Context) {
 // @Success      200 {object} ds.User
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /email [put]
+// @Router      /api/email [put]
 func (a *Application) ChangeEmail(c *gin.Context) {
 	userId, err := a.GetUserIdByJWT(c)
 	if err != nil {
@@ -309,6 +317,12 @@ func (a *Application) ChangeEmail(c *gin.Context) {
 	if err != nil {
 		log.Println(err)
 		newErrorResponse(c, http.StatusBadRequest, "Bad request")
+		return
+	}
+
+	if a.repo.EmailExistence(req.Email) {
+		log.Println(err)
+		newErrorResponse(c, http.StatusBadRequest, "This email is already taken")
 		return
 	}
 
@@ -338,7 +352,7 @@ func (a *Application) ChangeEmail(c *gin.Context) {
 // @Success      200 {object} []ds.Project
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /projects/latest [get]
+// @Router      /api/projects/latest [get]
 func (a *Application) LastSixProjects(c *gin.Context) {
 	userId, err := a.GetUserIdByJWT(c)
 	if err != nil {

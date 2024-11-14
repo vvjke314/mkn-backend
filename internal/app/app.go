@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	MailingServicePort string = ":5621"
+	MailingServicePort string = "mail_service:50051"
 )
 
 type Application struct {

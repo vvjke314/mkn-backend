@@ -24,7 +24,7 @@ import (
 // @Failure 403 {object} errorResponse
 // @Failure 404 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /project/{project_id} [put]
+// @Router      /api/project/{project_id} [put]
 func (a *Application) UpdateProject(c *gin.Context) {
 	userId, err := a.GetUserIdByJWT(c)
 	if err != nil {
@@ -96,7 +96,7 @@ func (a *Application) UpdateProject(c *gin.Context) {
 // @Failure 403 {object} errorResponse
 // @Failure 404 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /project/{project_id} [delete]
+// @Router      /api/project/{project_id} [delete]
 func (a *Application) DeleteProject(c *gin.Context) {
 	userId, err := a.GetUserIdByJWT(c)
 	if err != nil {
@@ -151,7 +151,7 @@ func (a *Application) DeleteProject(c *gin.Context) {
 // @Success 200 {object} []ds.Section
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /project/{project_id}/section [post]
+// @Router      /api/project/{project_id}/section [post]
 func (a *Application) CreateSection(c *gin.Context) {
 	req := &ds.CreateSectionRequest{}
 
@@ -217,7 +217,7 @@ func (a *Application) CreateSection(c *gin.Context) {
 // @Success      200 {object} []ds.User
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /project/{project_id}/collaborators [get]
+// @Router      /api/project/{project_id}/collaborators [get]
 func (a *Application) GetCollaborators(c *gin.Context) {
 	userId, err := a.GetUserIdByJWT(c)
 	if err != nil {
@@ -260,7 +260,7 @@ func (a *Application) GetCollaborators(c *gin.Context) {
 // @Success      200 {object} []ds.Section
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /project/{project_id}/sections [get]
+// @Router      /api/project/{project_id}/sections [get]
 func (a *Application) GetAllSections(c *gin.Context) {
 	userId, err := a.GetUserIdByJWT(c)
 	if err != nil {
@@ -299,12 +299,12 @@ func (a *Application) GetAllSections(c *gin.Context) {
 // @Tags         collaborations
 // @Produce      json
 // @Security BearerAuth
-// @Param collaborator_id query string true "Collaborator ID"
+// @Param collaborator_name query string true "Collaborator nickname"
 // @Param project_id path string true "Project ID"
 // @Success 200 {object} []ds.User
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /project/{project_id}/collaborator [post]
+// @Router      /api/project/{project_id}/collaborator [post]
 func (a *Application) AddCollaborator(c *gin.Context) {
 	userId, err := a.GetUserIdByJWT(c)
 	if err != nil {
@@ -314,10 +314,17 @@ func (a *Application) AddCollaborator(c *gin.Context) {
 	}
 
 	projectId := c.Param("project_id")
-	collabId := c.Query("collaborator_id")
+	collab := c.Query("collaborator_name")
 
-	if collabId == "" {
+	if collab == "" {
 		newErrorResponse(c, http.StatusBadRequest, "You need to add query param \"collaborator_id\"")
+	}
+
+	collabId, err := a.repo.GetUserByName(collab)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusBadRequest, "Invalid collaborator nickname")
+		return
 	}
 
 	project, err := a.repo.GetProjectById(projectId)
@@ -332,12 +339,12 @@ func (a *Application) AddCollaborator(c *gin.Context) {
 		return
 	}
 
-	if a.repo.IsCollaborator(collabId, projectId) {
+	if a.repo.IsCollaborator(collabId.Id.String(), projectId) {
 		newErrorResponse(c, http.StatusBadRequest, "Collaboration is already exists")
 		return
 	}
 
-	err = a.repo.AddCollaborator(userId, projectId, collabId)
+	err = a.repo.AddCollaborator(userId, projectId, collabId.Id.String())
 	if err != nil {
 		log.Println(err)
 		newErrorResponse(c, http.StatusInternalServerError, "Can't add collaborator")
@@ -360,12 +367,12 @@ func (a *Application) AddCollaborator(c *gin.Context) {
 // @Tags         collaborations
 // @Produce      json
 // @Security BearerAuth
-// @Param collaborator_id query string true "Collaborator ID"
+// @Param collaborator_name query string true "Collaborator nickname"
 // @Param project_id path string true "Project ID"
 // @Success 200 {object} []ds.Collaboration
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /project/{project_id}/collaborator [delete]
+// @Router      /api/project/{project_id}/collaborator [delete]
 func (a *Application) DeleteCollaborator(c *gin.Context) {
 	userId, err := a.GetUserIdByJWT(c)
 	if err != nil {
@@ -375,10 +382,17 @@ func (a *Application) DeleteCollaborator(c *gin.Context) {
 	}
 
 	projectId := c.Param("project_id")
-	collabId := c.Query("collaborator_id")
+	collab := c.Query("collaborator_name")
 
-	if collabId == "" {
+	if collab == "" {
 		newErrorResponse(c, http.StatusBadRequest, "You need to add query param \"collaborator_id\"")
+	}
+
+	collabId, err := a.repo.GetUserByName(collab)
+	if err != nil {
+		log.Println(err)
+		newErrorResponse(c, http.StatusBadRequest, "Invalid collaborator nickname")
+		return
 	}
 
 	project, err := a.repo.GetProjectById(projectId)
@@ -393,12 +407,12 @@ func (a *Application) DeleteCollaborator(c *gin.Context) {
 		return
 	}
 
-	if !a.repo.IsCollaborator(collabId, projectId) {
+	if !a.repo.IsCollaborator(collabId.Id.String(), projectId) {
 		newErrorResponse(c, http.StatusBadRequest, "Collaboration is not exists")
 		return
 	}
 
-	err = a.repo.DeleteCollaborator(userId, projectId, collabId)
+	err = a.repo.DeleteCollaborator(userId, projectId, collabId.Id.String())
 	if err != nil {
 		log.Println(err)
 		newErrorResponse(c, http.StatusInternalServerError, "Can't add collaborator")

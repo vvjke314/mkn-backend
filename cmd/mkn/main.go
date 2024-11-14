@@ -60,7 +60,7 @@ func main() {
 		grpcApi.RegisterBackendServiceServer(s, srv)
 		log.Println("GRPC SERVER STARTED")
 		//зарегистрировать сервисы
-		l, err := net.Listen("tcp", ":9000")
+		l, err := net.Listen("tcp", ":50051")
 		if err != nil {
 			log.WithError(err)
 		}

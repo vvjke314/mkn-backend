@@ -25,7 +25,7 @@ import (
 // @Failure 403 {object} errorResponse
 // @Failure 404 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /project/section/{section_id} [put]
+// @Router      /api/project/section/{section_id} [put]
 func (a *Application) UpdateSection(c *gin.Context) {
 	userId, err := a.GetUserIdByJWT(c)
 	if err != nil {
@@ -79,7 +79,7 @@ func (a *Application) UpdateSection(c *gin.Context) {
 	sections, err := a.repo.GetAllSections(section.ProjectId.String())
 	if err != nil {
 		log.Println(err)
-		newErrorResponse(c, http.StatusInternalServerError, "Can't get all projects")
+		newErrorResponse(c, http.StatusInternalServerError, "Can't get all sections")
 		return
 	}
 
@@ -97,7 +97,7 @@ func (a *Application) UpdateSection(c *gin.Context) {
 // @Failure 403 {object} errorResponse
 // @Failure 404 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /project/section/{section_id} [delete]
+// @Router      /api/project/section/{section_id} [delete]
 func (a *Application) DeleteSection(c *gin.Context) {
 	userId, err := a.GetUserIdByJWT(c)
 	if err != nil {
@@ -152,7 +152,7 @@ func (a *Application) DeleteSection(c *gin.Context) {
 // @Success 200 {object} []ds.Notification
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /project/section/{section_id}/notification [post]
+// @Router      /api/project/section/{section_id}/notification [post]
 func (a *Application) CreateNotification(c *gin.Context) {
 	req := &ds.CreateNotificationRequest{}
 
@@ -184,12 +184,14 @@ func (a *Application) CreateNotification(c *gin.Context) {
 		return
 	}
 
+	dl, _ := time.Parse(time.RFC3339, req.Deadline)
+
 	notification := &ds.Notification{
 		Id:          uuid.New(),
 		SectionId:   section.Id,
 		Title:       req.Title,
 		Description: req.Description,
-		Deadline:    req.Deadline,
+		Deadline:    dl,
 		Status:      "scheduled",
 		ErrorStatus: 0,
 	}
@@ -201,9 +203,8 @@ func (a *Application) CreateNotification(c *gin.Context) {
 		return
 	}
 
-	deadline := notification.Deadline.Sub(time.Now())
-	deadlineInt := int(deadline.Seconds())
-	deadlineStr := strconv.Itoa(deadlineInt)
+	deadline := notification.Deadline.Unix()
+	deadlineStr := strconv.FormatInt(deadline, 10)
 	a.grpcClient.ScheduleNotification(*a.ctx, &grpcApi.ScheduleRequest{NotificationId: notification.Id.String(), Deadline: deadlineStr})
 
 	notifications, err := a.repo.GetAllNotifications(sectionId)
@@ -226,7 +227,7 @@ func (a *Application) CreateNotification(c *gin.Context) {
 // @Success      200 {object} []ds.Notification
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /project/section/{section_id}/notifications [get]
+// @Router      /api/project/section/{section_id}/notifications [get]
 func (a *Application) GetAllNotifications(c *gin.Context) {
 	userId, err := a.GetUserIdByJWT(c)
 	if err != nil {
@@ -264,7 +265,7 @@ func (a *Application) GetAllNotifications(c *gin.Context) {
 // @Failure 403 {object} errorResponse
 // @Failure 404 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /project/section/notification/{notification_id} [get]
+// @Router      /api/project/section/notification/{notification_id} [get]
 func (a *Application) GetNotification(c *gin.Context) {
 	userId, err := a.GetUserIdByJWT(c)
 	if err != nil {

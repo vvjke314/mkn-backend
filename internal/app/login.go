@@ -40,7 +40,7 @@ type LoginReqBody struct {
 // @Param data body LoginReqBody true "User data"
 // @Success      200 {object} ds.User
 // @Failure 500 {object} errorResponse
-// @Router      /login [post]
+// @Router      /api/login [post]
 func (a *Application) Login(c *gin.Context) {
 	req := &LoginReqBody{}
 
@@ -69,6 +69,7 @@ func (a *Application) Login(c *gin.Context) {
 	usr, err := a.repo.GetUser(req.Username, generateHashString(req.Password))
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, "No such user in database")
+		return
 	}
 
 	a.redis.Set(*a.ctx, token, usr.Id.String(), tokenTTL)
@@ -86,7 +87,7 @@ func (a *Application) Login(c *gin.Context) {
 // @Success      200 {object} ds.User
 // @Failure 403 {object} errorResponse
 // @Failure 500 {object} errorResponse
-// @Router      /logout [get]
+// @Router      /api/logout [get]
 func (a *Application) Logout(c *gin.Context) {
 	jwtStr, err := a.GetJWT(c)
 	if err != nil {
@@ -129,7 +130,7 @@ type SignUpReqBody struct {
 // @Param data body SignUpReqBody true "User data"
 // @Success      200 {object} ds.User
 // @Failure 500 {object} errorResponse
-// @Router      /signup [post]
+// @Router      /api/signup [post]
 func (a *Application) SignUp(c *gin.Context) {
 	req := &SignUpReqBody{}
 
@@ -154,18 +155,23 @@ func (a *Application) SignUp(c *gin.Context) {
 		return
 	}
 
-	user, err := a.repo.SignUp(&ds.User{
+	if a.repo.EmailExistence(req.Email) {
+		newErrorResponse(c, http.StatusBadRequest, "This email is already taken")
+		return
+	}
+
+	if a.repo.UserNameExistence(req.Username) {
+		newErrorResponse(c, http.StatusBadRequest, "This nickname is already taken")
+		return
+	}
+
+	user, _ := a.repo.SignUp(&ds.User{
 		Id:        uuid.New(),
 		Username:  req.Username,
 		IsManager: 0,
 		Email:     req.Email,
 		Password:  generateHashString(req.Password),
 	})
-
-	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "")
-		return
-	}
 
 	c.JSON(http.StatusOK, user)
 }
